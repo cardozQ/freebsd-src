@@ -1136,7 +1136,7 @@ vm_handle_hlt(struct vcpu *vcpu, bool intr_disabled, bool *retu)
 	struct vm *vm = vcpu->vm;
 	const char *wmesg;
 	struct thread *td;
-	int error, t, vcpuid, vcpu_halted, vm_halted;
+	int error, t, vcpuid, vcpu_halted, vm_halted, cap;
 
 	vcpuid = vcpu->vcpuid;
 	vcpu_halted = 0;
@@ -1146,6 +1146,11 @@ vm_handle_hlt(struct vcpu *vcpu, bool intr_disabled, bool *retu)
 
 	KASSERT(!CPU_ISSET(vcpuid, &vm->halted_cpus), ("vcpu already halted"));
 
+    vm_get_capability(vcpu, VM_CAP_HALT_EXIT, &cap);
+    if (cap) {
+        retu = true;
+        return 0;
+    }
 	vcpu_lock(vcpu);
 	while (1) {
 		/*
