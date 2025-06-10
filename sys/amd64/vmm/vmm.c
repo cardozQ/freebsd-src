@@ -1148,7 +1148,7 @@ vm_handle_hlt(struct vcpu *vcpu, bool intr_disabled, bool *retu)
 
     vm_get_capability(vcpu, VM_CAP_HALT_EXIT, &cap);
     if (cap) {
-        retu = true;
+        *retu = true;
         return 0;
     }
 	vcpu_lock(vcpu);
