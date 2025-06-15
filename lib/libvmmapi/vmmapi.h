@@ -135,7 +135,7 @@ int	vcpu_id(struct vcpu *vcpu);
 int	vm_parse_memsize(const char *optarg, size_t *memsize);
 int	vm_setup_memory(struct vmctx *ctx, size_t len, enum vm_mmap_style s);
 #ifdef __amd64__
-int	vm_setup_memory_qemu(struct vmctx *ctx, size_t len, enum vm_mmap_style s, int flags);
+int	vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, int flags);
 #endif
 void	*vm_map_gpa(struct vmctx *ctx, vm_paddr_t gaddr, size_t len);
 /* inverse operation to vm_map_gpa - extract guest address from host pointer */

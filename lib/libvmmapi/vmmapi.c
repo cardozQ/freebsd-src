@@ -534,7 +534,7 @@ vm_setup_memory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms)
 
 #ifdef __amd64__
 int
-vm_setup_memory_qemu(struct vmctx *ctx, size_t len, enum vm_mmap_style s, int flags)
+vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, int flags)
 {
 	size_t objsize, len;
 	vm_paddr_t gpa;
