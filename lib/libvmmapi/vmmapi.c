@@ -537,7 +537,6 @@ int
 vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, int flags)
 {
 	size_t objsize, len;
-	vm_paddr_t gpa;
 	char *baseaddr, *ptr;
 	int error;
 
