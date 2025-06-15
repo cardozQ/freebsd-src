@@ -65,8 +65,10 @@
 
 #ifdef __amd64__
 #define	VM_LOWMEM_LIMIT	(3 * GB)
+#define	VM_LOWMEM_QEMU_LIMIT	(2 * GB)
 #else
 #define	VM_LOWMEM_LIMIT	0
+#define	VM_LOWMEM_QEMU_LIMIT	0
 #endif
 #define	VM_HIGHMEM_BASE	(4 * GB)
 
@@ -151,12 +153,18 @@ vm_openf(const char *name, int flags)
 
 	vm->fd = vm->ctlfd = -1;
 	vm->memflags = 0;
+    vm->flags = 0;
 	vm->name = (char *)(vm + 1);
 	strcpy(vm->name, name);
 	memset(vm->memsegs, 0, sizeof(vm->memsegs));
 
 	if ((vm->ctlfd = vm_ctl_open()) < 0)
 		goto err;
+
+	if (flags & VMMAPI_OPEN_QEMU) {
+        /* Enable Qemu compatibility mode*/
+        vm->flags &= VM_OP_F_QEMU;
+	}
 
 	vm->fd = vm_device_open(vm->name);
 	if (vm->fd < 0 && errno == ENOENT) {
@@ -478,15 +486,15 @@ vm_setup_memory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms)
 	 * If 'memsize' cannot fit entirely in the 'lowmem' segment then create
 	 * another 'highmem' segment above VM_HIGHMEM_BASE for the remainder.
 	 */
-	if (memsize > VM_LOWMEM_LIMIT) {
-		ctx->memsegs[VM_MEMSEG_LOW].size = VM_LOWMEM_LIMIT;
-		ctx->memsegs[VM_MEMSEG_HIGH].size = memsize - VM_LOWMEM_LIMIT;
-		objsize = VM_HIGHMEM_BASE + ctx->memsegs[VM_MEMSEG_HIGH].size;
-	} else {
-		ctx->memsegs[VM_MEMSEG_LOW].size = memsize;
-		ctx->memsegs[VM_MEMSEG_HIGH].size = 0;
-		objsize = memsize;
-	}
+    if (memsize > VM_LOWMEM_LIMIT) {
+        ctx->memsegs[VM_MEMSEG_LOW].size = VM_LOWMEM_LIMIT;
+        ctx->memsegs[VM_MEMSEG_HIGH].size = memsize - VM_LOWMEM_LIMIT;
+        objsize = VM_HIGHMEM_BASE + ctx->memsegs[VM_MEMSEG_HIGH].size;
+    } else {
+        ctx->memsegs[VM_MEMSEG_LOW].size = memsize;
+        ctx->memsegs[VM_MEMSEG_HIGH].size = 0;
+        objsize = memsize;
+    }
 
 	error = vm_alloc_memseg(ctx, VM_SYSMEM, objsize, NULL);
 	if (error)
@@ -502,6 +510,7 @@ vm_setup_memory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms)
 		return (-1);
 
 	baseaddr = ptr + VM_MMAP_GUARD_SIZE;
+
 	if (ctx->memsegs[VM_MEMSEG_HIGH].size > 0) {
 		gpa = VM_HIGHMEM_BASE;
 		len = ctx->memsegs[VM_MEMSEG_HIGH].size;
@@ -522,6 +531,59 @@ vm_setup_memory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms)
 
 	return (0);
 }
+
+#ifdef __amd64__
+int
+vm_setup_memory_qemu(struct vmctx *ctx, size_t len, enum vm_mmap_style s, int flags)
+{
+	size_t objsize, len;
+	vm_paddr_t gpa;
+	char *baseaddr, *ptr;
+	int error;
+
+	assert(vms == VM_MMAP_ALL);
+
+    if (!(ctx->flags & VM_OP_F_QEMU)) {
+        return -1;
+	}
+
+    if (memsize > VM_LOWMEM_QEMU_LIMIT) {
+        ctx->memsegs[VM_MEMSEG_LOW].size = VM_LOWMEM_QEMU_LIMIT;
+        ctx->memsegs[VM_MEMSEG_HIGH].size = memsize - VM_LOWMEM_QEMU_LIMIT;
+        objsize = VM_HIGHMEM_BASE + ctx->memsegs[VM_MEMSEG_HIGH].size;
+    } else {
+        ctx->memsegs[VM_MEMSEG_LOW].size = memsize;
+        ctx->memsegs[VM_MEMSEG_HIGH].size = 0;
+        objsize = memsize;
+    }
+
+	// If QEMU, mmap entire segment into baseaddr.
+	error = vm_alloc_memseg(ctx, VM_SYSMEM, objsize, NULL);
+	if (error)
+		return (error);
+
+	/*
+	 * Stake out a contiguous region covering the guest physical memory
+	 * and the adjoining guard regions.
+	 */
+	len = VM_MMAP_GUARD_SIZE + objsize + VM_MMAP_GUARD_SIZE;
+	ptr = mmap(NULL, len, PROT_NONE, MAP_GUARD | MAP_ALIGNED_SUPER, -1, 0);
+	if (ptr == MAP_FAILED)
+		return (-1);
+
+	baseaddr = ptr + VM_MMAP_GUARD_SIZE;
+    assert(((uintptr_t)baseaddr & ((1 << 21) - 1)) == 0);  // 2MB alignment check
+
+	if ((ctx->memflags & VM_MEM_F_INCORE) == 0)
+		flags |= MAP_NOCORE;
+    ptr = mmap(baseaddr, objsize, PROT_RW, flags, ctx->fd, 0); 
+	if (ptr == MAP_FAILED)
+		return (-1);
+
+	ctx->baseaddr = baseaddr;
+    return (0);
+}
+#endif
 
 /*
  * Returns a non-NULL pointer if [gaddr, gaddr+len) is entirely contained in

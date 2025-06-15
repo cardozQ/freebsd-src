@@ -23,6 +23,7 @@ struct vmctx {
 		vm_size_t size;
 	} memsegs[VM_MEMSEG_COUNT];
 	int	memflags;
+    int flags;
 	char	*baseaddr;
 	char	*name;
 };

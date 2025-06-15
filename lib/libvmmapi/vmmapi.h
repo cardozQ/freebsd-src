@@ -64,6 +64,10 @@ enum vm_mmap_style {
 #define	VM_MEM_F_INCORE	0x01	/* include guest memory in core file */
 #define	VM_MEM_F_WIRED	0x02	/* guest memory is wired */
 
+
+/* Other VMM FLags */
+#define VM_OP_F_QEMU 0x01
+
 /*
  * Identifiers for memory segments:
  * - vm_setup_memory() uses VM_SYSMEM for the system memory segment.
@@ -74,6 +78,7 @@ enum {
 	VM_BOOTROM,
 	VM_FRAMEBUFFER,
 	VM_PCIROM,
+	VM_OPTION /* Option ROM Allocation for QEMU */
 };
 
 __BEGIN_DECLS
@@ -119,6 +124,7 @@ int	vm_create(const char *name);
 struct vmctx *vm_open(const char *name);
 #define	VMMAPI_OPEN_CREATE	0x01	/* create if the VM does not exist */
 #define	VMMAPI_OPEN_REINIT	0x02	/* reinitialize the VM if it exists */
+#define	VMMAPI_OPEN_QEMU	0x04	/* Creates the VM in QEMU mode */
 struct vmctx *vm_openf(const char *name, int flags);
 void	vm_close(struct vmctx *ctx);
 void	vm_destroy(struct vmctx *ctx);
@@ -128,6 +134,9 @@ void	vm_vcpu_close(struct vcpu *vcpu);
 int	vcpu_id(struct vcpu *vcpu);
 int	vm_parse_memsize(const char *optarg, size_t *memsize);
 int	vm_setup_memory(struct vmctx *ctx, size_t len, enum vm_mmap_style s);
+#ifdef __amd64__
+int	vm_setup_memory_qemu(struct vmctx *ctx, size_t len, enum vm_mmap_style s, int flags);
+#endif
 void	*vm_map_gpa(struct vmctx *ctx, vm_paddr_t gaddr, size_t len);
 /* inverse operation to vm_map_gpa - extract guest address from host pointer */
 vm_paddr_t vm_rev_map_gpa(struct vmctx *ctx, void *addr);
