@@ -538,9 +538,9 @@ vm_setup_memory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms)
 int
 vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, const char* name)
 {
-	size_t objsize, len;
-	char *baseaddr, *ptr;
-	int error;
+	size_t objsize;//, len;
+	/* char *baseaddr, *ptr; */
+	//int error;
 
 	assert(vms == VM_MMAP_ALL);
 
