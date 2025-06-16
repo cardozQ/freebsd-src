@@ -330,8 +330,10 @@ vm_get_guestmem_from_ctx(struct vmctx *ctx, char **guest_baseaddr,
 {
 
 	*guest_baseaddr = ctx->baseaddr;
-	*lowmem_size = ctx->memsegs[VM_MEMSEG_LOW].size;
-	*highmem_size = ctx->memsegs[VM_MEMSEG_HIGH].size;
+    if(lowmem_size && highmem_size) {
+        *lowmem_size = ctx->memsegs[VM_MEMSEG_LOW].size;
+        *highmem_size = ctx->memsegs[VM_MEMSEG_HIGH].size;
+    }
 	return (0);
 }
 
