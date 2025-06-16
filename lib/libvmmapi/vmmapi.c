@@ -163,7 +163,7 @@ vm_openf(const char *name, int flags)
 
 	if (flags & VMMAPI_OPEN_QEMU) {
         /* Enable Qemu compatibility mode*/
-        vm->flags &= VM_OP_F_QEMU;
+        vm->flags |= VM_OP_F_QEMU;
 	}
 
 	vm->fd = vm_device_open(vm->name);
