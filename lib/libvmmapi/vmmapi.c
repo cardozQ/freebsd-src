@@ -575,8 +575,10 @@ vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, 
 	baseaddr = ptr + VM_MMAP_GUARD_SIZE;
     assert(((uintptr_t)baseaddr & ((1 << 21) - 1)) == 0);  // 2MB alignment check
 
-	if ((ctx->memflags & VM_MEM_F_INCORE) == 0)
+	if ((ctx->memflags & VM_MEM_F_INCORE) == 0) {
 		flags |= MAP_NOCORE;
+	}
+    
     ptr = mmap(baseaddr, objsize, PROT_RW, flags, ctx->fd, 0); 
 	if (ptr == MAP_FAILED)
 		return (-1);
