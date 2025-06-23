@@ -1118,6 +1118,7 @@ vmx_init(struct vm *vm, pmap_t pmap)
 		panic("vmx_init: error setting guest msr access");
 
 	if (virtual_interrupt_delivery) {
+        printf("VID is go...\n");
 		error = vm_map_mmio(vm, DEFAULT_APIC_BASE, PAGE_SIZE,
 		    APIC_ACCESS_ADDRESS);
 		/* XXX this should really return an error to the caller */
