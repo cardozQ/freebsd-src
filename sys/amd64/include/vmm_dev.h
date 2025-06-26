@@ -256,8 +256,8 @@ enum {
 	IOCNUM_REINIT = 5,
 
 	/* memory apis */
-	IOCNUM_MAP_MEMORY = 10,			/* deprecated */
-	IOCNUM_GET_MEMORY_SEG = 11,		/* deprecated */
+	IOCNUM_MAP_MEMORY = 10,	    /* deprecated */
+	IOCNUM_GET_MEMORY_SEG = 11, /* deprecated */
 	IOCNUM_GET_GPA_PMAP = 12,
 	IOCNUM_GLA2GPA = 13,
 	IOCNUM_ALLOC_MEMSEG = 14,
@@ -312,6 +312,10 @@ enum {
 	/* CPU Topology */
 	IOCNUM_SET_TOPOLOGY = 63,
 	IOCNUM_GET_TOPOLOGY = 64,
+
+	/* VM Flags */
+	IOCNUM_SET_FLAGS = 65,
+    IOCNUM_GET_FLAGS = 66,
 
 	/* legacy interrupt injection */
 	IOCNUM_ISA_ASSERT_IRQ = 80,
