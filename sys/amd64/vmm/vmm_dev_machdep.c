@@ -164,6 +164,9 @@ const struct vmmdev_ioctl vmmdev_machdep_ioctls[] = {
 	VMMDEV_IOCTL(VM_RTC_WRITE, 0),
 	VMMDEV_IOCTL(VM_RTC_GETTIME, 0),
 	VMMDEV_IOCTL(VM_RTC_SETTIME, 0),
+
+	VMMDEV_IOCTL(VM_GET_FLAGS, 0),
+	VMMDEV_IOCTL(VM_SET_FLAGS, 0),
 };
 const size_t vmmdev_machdep_ioctl_count = nitems(vmmdev_machdep_ioctls);
 
@@ -517,9 +520,22 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 		error = vm_restore_time(vm);
 		break;
 #endif
+	case VM_SET_FLAGS: {
+        int *vflags;
+        vflags = (int *)data;
+        error = vm_set_flags(sc->vm, *vflags);
+        break;
+	}
+	case VM_GET_FLAGS: {
+		int *vflags;
+		vflags = (int *)data;
+		vm_get_flags(sc->vm, vflags);
+        break;
+	}
 	default:
 		error = ENOTTY;
 		break;
+
 	}
 
 	return (error);

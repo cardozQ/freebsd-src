@@ -62,8 +62,6 @@ extern const char *vm_capstrmap[];
 	VM_RESUME_CPU,		\
 	VM_SET_TOPOLOGY,	\
     VM_GET_TOPOLOGY,    \
-    VM_SET_FLAGS,       \
-    VM_GET_FLAGS
 
 
 #define	VM_PPT_IOCTLS		\

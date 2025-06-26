@@ -530,20 +530,6 @@ vm_setup_memory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms)
 
 #ifdef __amd64__
 int
-vm_set_flags(struct vmctx *ctx,
-    int flags)
-{
-	return (ioctl(ctx->fd, VM_SET_FLAGS, &flags));
-}
-
-int
-vm_get_flags(struct vmctx *ctx,
-    int *flags)
-{
-	return (ioctl(ctx->fd, VM_GET_FLAGS, &flags));
-}
-
-int
 vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, const char* name)
 {
 	size_t objsize;//, len;

@@ -84,7 +84,9 @@ const char *vm_capstrmap[] = {
 	VM_GET_INTINFO,			\
 	VM_RESTART_INSTRUCTION,		\
 	VM_SNAPSHOT_REQ,		\
-	VM_RESTORE_TIME
+    VM_RESTORE_TIME,    \
+    VM_SET_FLAGS,       \
+    VM_GET_FLAGS
 
 const cap_ioctl_t vm_ioctl_cmds[] = {
 	VM_COMMON_IOCTLS,
@@ -92,6 +94,20 @@ const cap_ioctl_t vm_ioctl_cmds[] = {
 	VM_MD_IOCTLS,
 };
 size_t vm_ioctl_ncmds = nitems(vm_ioctl_cmds);
+
+int
+vm_set_flags(struct vmctx *ctx,
+    int flags)
+{
+	return (ioctl(ctx->fd, VM_SET_FLAGS, &flags));
+}
+
+int
+vm_get_flags(struct vmctx *ctx,
+    int *flags)
+{
+	return (ioctl(ctx->fd, VM_GET_FLAGS, &flags));
+}
 
 int
 vm_set_desc(struct vcpu *vcpu, int reg,

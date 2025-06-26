@@ -1122,8 +1122,6 @@ vmx_init(struct vm *vm, pmap_t pmap)
 		    APIC_ACCESS_ADDRESS);
 		/* XXX this should really return an error to the caller */
 		KASSERT(error == 0, ("vm_map_mmio(apicbase) error %d", error));
-	} else {
-        printf("Ain't go.");
 	}
 
 	vmx->pmap = pmap;

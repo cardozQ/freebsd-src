@@ -379,10 +379,6 @@ static const struct vmmdev_ioctl vmmdev_ioctls[] = {
 	VMMDEV_IOCTL(VM_GET_TOPOLOGY, 0),
 	VMMDEV_IOCTL(VM_SET_TOPOLOGY, 0),
 
-#if defined(__amd64__)
-	VMMDEV_IOCTL(VM_GET_FLAGS, 0),
-	VMMDEV_IOCTL(VM_SET_FLAGS, 0),
-#endif
 };
 
 static int
@@ -655,18 +651,6 @@ vmmdev_ioctl(struct cdev *cdev, u_long cmd, caddr_t data, int fflag,
 		    &topology->threads, &topology->maxcpus);
 		error = 0;
 		break;
-	}
-	case VM_SET_FLAGS: {
-        int *vflags;
-        vflags = (int *)data;
-        error = vm_set_flags(sc->vm, *vflags);
-        break;
-	}
-	case VM_GET_FLAGS: {
-		int *vflags;
-		vflags = (int *)data;
-		vm_get_flags(sc->vm, vflags);
-        break;
 	}
 	default:
 		error = vmmdev_machdep_ioctl(sc->vm, vcpu, cmd, data, fflag,
