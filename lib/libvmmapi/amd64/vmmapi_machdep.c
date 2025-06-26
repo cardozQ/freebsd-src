@@ -59,6 +59,8 @@ const char *vm_capstrmap[] = {
 	VM_GET_SEGMENT_DESCRIPTOR,	\
 	VM_SET_KERNEMU_DEV,		\
 	VM_GET_KERNEMU_DEV,		\
+    VM_SET_FLAGS,       \
+    VM_GET_FLAGS, \
 	VM_LAPIC_IRQ,			\
 	VM_LAPIC_LOCAL_IRQ,		\
 	VM_LAPIC_MSI,			\
@@ -84,9 +86,7 @@ const char *vm_capstrmap[] = {
 	VM_GET_INTINFO,			\
 	VM_RESTART_INSTRUCTION,		\
 	VM_SNAPSHOT_REQ,		\
-    VM_RESTORE_TIME,    \
-    VM_SET_FLAGS,       \
-    VM_GET_FLAGS
+    VM_RESTORE_TIME    
 
 const cap_ioctl_t vm_ioctl_cmds[] = {
 	VM_COMMON_IOCTLS,
