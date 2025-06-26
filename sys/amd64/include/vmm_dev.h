@@ -429,6 +429,10 @@ enum {
 	_IOW('v', IOCNUM_SET_TOPOLOGY, struct vm_cpu_topology)
 #define VM_GET_TOPOLOGY \
 	_IOR('v', IOCNUM_GET_TOPOLOGY, struct vm_cpu_topology)
+#define VM_SET_FLAGS \
+	_IOW('v', IOCNUM_SET_FLAGS, int)
+#define VM_GET_FLAGS \
+	_IOR('v', IOCNUM_GET_FLAGS, int)
 #define	VM_GET_GPA_PMAP \
 	_IOWR('v', IOCNUM_GET_GPA_PMAP, struct vm_gpa_pte)
 #define	VM_GLA2GPA	\

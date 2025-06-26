@@ -173,6 +173,7 @@ struct vm {
 	uint16_t	threads;		/* (o) num of threads/core */
 	uint16_t	maxcpus;		/* (o) max pluggable cpus */
 	struct sx	vcpus_init_lock;	/* (o) */
+    int     flags; /* (o) External flags */
 };
 
 #define	VMM_CTR0(vcpu, format)						\
@@ -649,6 +650,43 @@ vm_set_topology(struct vm *vm, uint16_t sockets, uint16_t cores,
 	vm->threads = threads;
 	return(0);
 }
+
+void
+vm_get_flags(struct vm *vm, int *vflags)
+{
+	*vflags = vm->flags;
+}
+
+static void
+setup_qemu_mode(struct vm *vm)
+{
+	vpmtmr_cleanup(vm->vpmtmr);
+    vm->vpmtmr = NULL;
+	vatpit_cleanup(vm->vatpit);
+    vm->vatpit = NULL;
+	vhpet_cleanup(vm->vhpet);
+    vm->vhpet = NULL;
+	vatpic_cleanup(vm->vatpic);
+    vm->vatpic = NULL;
+	vioapic_cleanup(vm->vioapic);
+    vm->vioapic = NULL;
+	if (vm->vrtc) {
+        vrtc_cleanup(vm->vrtc);
+        vm->rtc = NULL;
+	}
+}
+
+int
+vm_set_flags(struct vm *vm, int vflags)
+{
+	/* Ignore maxcpus. */
+	vm->flags = vflags;
+	if (vm->flags & VM_OP_F_QEMU) {
+        setup_qemu_mode(vm);
+	}
+	return(0);
+}
+
 
 static void
 vm_cleanup(struct vm *vm, bool destroy)

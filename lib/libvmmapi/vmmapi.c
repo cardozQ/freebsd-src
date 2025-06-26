@@ -153,18 +153,12 @@ vm_openf(const char *name, int flags)
 
 	vm->fd = vm->ctlfd = -1;
 	vm->memflags = 0;
-    vm->flags = 0;
 	vm->name = (char *)(vm + 1);
 	strcpy(vm->name, name);
 	memset(vm->memsegs, 0, sizeof(vm->memsegs));
 
 	if ((vm->ctlfd = vm_ctl_open()) < 0)
 		goto err;
-
-	if (flags & VMMAPI_OPEN_QEMU) {
-        /* Enable Qemu compatibility mode*/
-        vm->flags |= VM_OP_F_QEMU;
-	}
 
 	vm->fd = vm_device_open(vm->name);
 	if (vm->fd < 0 && errno == ENOENT) {
@@ -536,6 +530,20 @@ vm_setup_memory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms)
 
 #ifdef __amd64__
 int
+vm_set_flags(struct vmctx *ctx,
+    int flags)
+{
+	return (ioctl(ctx->fd, VM_SET_FLAGS, &flags));
+}
+
+int
+vm_get_flags(struct vmctx *ctx,
+    int *flags)
+{
+	return (ioctl(ctx->fd, VM_GET_FLAGS, &flags));
+}
+
+int
 vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, const char* name)
 {
 	size_t objsize;//, len;
@@ -543,10 +551,6 @@ vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, 
 	//int error;
 
 	assert(vms == VM_MMAP_ALL);
-
-    if (!(ctx->flags & VM_OP_F_QEMU)) {
-        return -1;
-	}
 
     if (memsize > VM_LOWMEM_QEMU_LIMIT) {
         ctx->memsegs[VM_MEMSEG_LOW].size = VM_LOWMEM_QEMU_LIMIT;

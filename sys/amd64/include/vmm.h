@@ -783,4 +783,7 @@ vm_inject_ss(struct vcpu *vcpu, int errcode)
 
 void vm_inject_pf(struct vcpu *vcpu, int error_code, uint64_t cr2);
 
+/* Other VMM FLags */
+#define VM_OP_F_QEMU (1 << 0) 
+
 #endif	/* _VMM_H_ */

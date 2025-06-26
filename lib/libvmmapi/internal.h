@@ -23,7 +23,6 @@ struct vmctx {
 		vm_size_t size;
 	} memsegs[VM_MEMSEG_COUNT];
 	int	memflags;
-    int flags;
 	char	*baseaddr;
 	char	*name;
 };
@@ -62,7 +61,10 @@ extern const char *vm_capstrmap[];
 	VM_SUSPEND_CPU,		\
 	VM_RESUME_CPU,		\
 	VM_SET_TOPOLOGY,	\
-	VM_GET_TOPOLOGY
+    VM_GET_TOPOLOGY,    \
+    VM_SET_FLAGS,       \
+    VM_GET_FLAGS
+
 
 #define	VM_PPT_IOCTLS		\
 	VM_BIND_PPTDEV,		\
