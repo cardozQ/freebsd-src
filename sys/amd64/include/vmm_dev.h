@@ -334,7 +334,7 @@ enum {
 	/* checkpoint */
 	IOCNUM_SNAPSHOT_REQ = 113,
 
-	IOCNUM_RESTORE_TIME = 115
+	IOCNUM_RESTORE_TIME = 115,
 
 	/* VM Flags */
 	IOCNUM_SET_FLAGS = 121,
