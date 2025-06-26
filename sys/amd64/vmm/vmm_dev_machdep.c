@@ -523,13 +523,13 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 	case VM_SET_FLAGS: {
         int *vflags;
         vflags = (int *)data;
-        error = vm_set_flags(sc->vm, *vflags);
+        error = vm_set_flags(vm, *vflags);
         break;
 	}
 	case VM_GET_FLAGS: {
 		int *vflags;
 		vflags = (int *)data;
-		vm_get_flags(sc->vm, vflags);
+		vm_get_flags(vm, vflags);
         break;
 	}
 	default:
