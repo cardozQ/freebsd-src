@@ -313,10 +313,6 @@ enum {
 	IOCNUM_SET_TOPOLOGY = 63,
 	IOCNUM_GET_TOPOLOGY = 64,
 
-	/* VM Flags */
-	IOCNUM_SET_FLAGS = 65,
-    IOCNUM_GET_FLAGS = 66,
-
 	/* legacy interrupt injection */
 	IOCNUM_ISA_ASSERT_IRQ = 80,
 	IOCNUM_ISA_DEASSERT_IRQ = 81,
@@ -339,6 +335,11 @@ enum {
 	IOCNUM_SNAPSHOT_REQ = 113,
 
 	IOCNUM_RESTORE_TIME = 115
+
+	/* VM Flags */
+	IOCNUM_SET_FLAGS = 121,
+    IOCNUM_GET_FLAGS = 122,
+
 };
 
 #define	VM_RUN		\

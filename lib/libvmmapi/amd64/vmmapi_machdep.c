@@ -59,8 +59,8 @@ const char *vm_capstrmap[] = {
 	VM_GET_SEGMENT_DESCRIPTOR,	\
 	VM_SET_KERNEMU_DEV,		\
 	VM_GET_KERNEMU_DEV,		\
-    VM_SET_FLAGS,       \
-    VM_GET_FLAGS, \
+    VM_SET_FLAGS,	 \
+    VM_GET_FLAGS,    \
 	VM_LAPIC_IRQ,			\
 	VM_LAPIC_LOCAL_IRQ,		\
 	VM_LAPIC_MSI,			\
