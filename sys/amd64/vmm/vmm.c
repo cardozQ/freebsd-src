@@ -672,7 +672,7 @@ setup_qemu_mode(struct vm *vm)
     vm->vioapic = NULL;
 	if (vm->vrtc) {
         vrtc_cleanup(vm->vrtc);
-        vm->rtc = NULL;
+        vm->vrtc = NULL;
 	}
 }
 

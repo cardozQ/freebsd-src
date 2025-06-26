@@ -238,7 +238,8 @@ void vm_get_topology(struct vm *vm, uint16_t *sockets, uint16_t *cores,
     uint16_t *threads, uint16_t *maxcpus);
 int vm_set_topology(struct vm *vm, uint16_t sockets, uint16_t cores,
     uint16_t threads, uint16_t maxcpus);
-
+void vm_get_flags(struct vm *vm, int *vflags);
+int vm_set_flags(struct vm *vm, int vflags);
 int vm_map_mmio(struct vm *vm, vm_paddr_t gpa, size_t len, vm_paddr_t hpa);
 int vm_unmap_mmio(struct vm *vm, vm_paddr_t gpa, size_t len);
 int vm_assign_pptdev(struct vm *vm, int bus, int slot, int func);
