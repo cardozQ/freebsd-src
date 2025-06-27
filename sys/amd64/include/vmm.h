@@ -143,7 +143,11 @@ enum x2apic_state {
 #define VM_MAX_NAMELEN \
     (SPECNAMELEN - VM_MAX_PREFIXLEN - VM_MAX_SUFFIXLEN - 1)
 
+/* Other VMM FLags */
+#define VM_OP_F_QEMU (1 << 0) 
+
 #ifdef _KERNEL
+
 #include <sys/kassert.h>
 
 CTASSERT(VM_MAX_NAMELEN >= VM_MIN_NAMELEN);
@@ -784,7 +788,5 @@ vm_inject_ss(struct vcpu *vcpu, int errcode)
 
 void vm_inject_pf(struct vcpu *vcpu, int error_code, uint64_t cr2);
 
-/* Other VMM FLags */
-#define VM_OP_F_QEMU (1 << 0) 
 
 #endif	/* _VMM_H_ */
