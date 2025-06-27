@@ -472,6 +472,3 @@ enum {
 	_IOWR('v', IOCNUM_RESTORE_TIME, int)
 #endif
 
-#ifndef VM_SET_FLAGS
-#error "even here"
-#endif
