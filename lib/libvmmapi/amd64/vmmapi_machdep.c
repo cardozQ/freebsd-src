@@ -54,10 +54,6 @@ const char *vm_capstrmap[] = {
 	[VM_CAP_MAX] = NULL,
 };
 
-#ifndef VM_SET_FLAGS
-#error "Could not compile"
-#endif
-
 #define	VM_MD_IOCTLS			\
 	VM_SET_SEGMENT_DESCRIPTOR,	\
 	VM_GET_SEGMENT_DESCRIPTOR,	\

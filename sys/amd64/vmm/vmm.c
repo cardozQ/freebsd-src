@@ -701,15 +701,18 @@ vm_cleanup(struct vm *vm, bool destroy)
 	if (vm->iommu != NULL)
 		iommu_destroy_domain(vm->iommu);
 
-	if (destroy)
-		vrtc_cleanup(vm->vrtc);
-	else
-		vrtc_reset(vm->vrtc);
-	vpmtmr_cleanup(vm->vpmtmr);
-	vatpit_cleanup(vm->vatpit);
-	vhpet_cleanup(vm->vhpet);
-	vatpic_cleanup(vm->vatpic);
-	vioapic_cleanup(vm->vioapic);
+	// Not created in QEMU mode
+	if (!(vm->flags & VM_OP_F_QEMU)) {
+        if (destroy)
+            vrtc_cleanup(vm->vrtc);
+        else
+            vrtc_reset(vm->vrtc);
+        vpmtmr_cleanup(vm->vpmtmr);
+        vatpit_cleanup(vm->vatpit);
+        vhpet_cleanup(vm->vhpet);
+        vatpic_cleanup(vm->vatpic);
+        vioapic_cleanup(vm->vioapic);
+    }
 
 	for (int i = 0; i < vm->maxcpus; i++) {
 		if (vm->vcpu[i] != NULL)
