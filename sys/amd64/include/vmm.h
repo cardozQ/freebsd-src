@@ -144,7 +144,8 @@ enum x2apic_state {
     (SPECNAMELEN - VM_MAX_PREFIXLEN - VM_MAX_SUFFIXLEN - 1)
 
 /* Other VMM FLags */
-#define VM_OP_F_QEMU (1 << 0) 
+#define VM_OP_F_QEMU (1 << 0)
+
 
 #ifdef _KERNEL
 
@@ -532,6 +533,20 @@ struct vm_guest_paging {
 	enum vm_paging_mode paging_mode;
 };
 
+struct vmm_qmem {
+    vm_paddr_t gpa;
+    bool write;
+    size_t size;
+    uint8_t *data;
+};
+
+struct vmm_qio {
+	uint16_t port;
+	bool in;
+	size_t size;
+    uint8_t *data;
+};
+
 /*
  * The data structures 'vie' and 'vie_op' are meant to be opaque to the
  * consumers of instruction decoding. The only reason why their contents
@@ -661,6 +676,14 @@ enum task_switch_reason {
 	TSR_IRET,
 	TSR_JMP,
 	TSR_IDT_GATE,	/* task gate in IDT */
+};
+
+
+struct vm_lapic_state {
+    struct {
+        uint32_t data;
+        uint32_t padding[3];
+    } fields[256];
 };
 
 struct vm_task_switch {

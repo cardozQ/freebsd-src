@@ -1376,6 +1376,9 @@ vm_handle_inst_emul(struct vcpu *vcpu, bool *retu)
 	if (gpa >= DEFAULT_APIC_BASE && gpa < DEFAULT_APIC_BASE + PAGE_SIZE) {
 		mread = lapic_mmio_read;
 		mwrite = lapic_mmio_write;
+	} else if (vcpu->vm->flags & VM_OP_F_QEMU) {
+		*retu = true;
+        return (0);
 	} else if (gpa >= VIOAPIC_BASE && gpa < VIOAPIC_BASE + VIOAPIC_SIZE) {
 		mread = vioapic_mmio_read;
 		mwrite = vioapic_mmio_write;

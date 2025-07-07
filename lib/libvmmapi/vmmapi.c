@@ -530,7 +530,7 @@ vm_setup_memory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms)
 
 #ifdef __amd64__
 int
-vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, const char* name)
+vm_setup_qmemory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, const char* name)
 {
 	size_t objsize;//, len;
 	/* char *baseaddr, *ptr; */
@@ -548,32 +548,6 @@ vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, 
         objsize = memsize;
     }
 
-	/* // If QEMU, mmap entire segment into baseaddr. */
-	/* error = vm_alloc_memseg(ctx, VM_SYSMEM, objsize, NULL); */
-	/* if (error) */
-	/* 	return (error); */
-
-	/* /\* */
-	/*  * Stake out a contiguous region covering the guest physical memory */
-	/*  * and the adjoining guard regions. */
-	/*  *\/ */
-	/* len = VM_MMAP_GUARD_SIZE + objsize + VM_MMAP_GUARD_SIZE; */
-	/* ptr = mmap(NULL, len, PROT_NONE, MAP_GUARD | MAP_ALIGNED_SUPER, -1, 0); */
-	/* if (ptr == MAP_FAILED) */
-	/* 	return (-1); */
-
-	/* baseaddr = ptr + VM_MMAP_GUARD_SIZE; */
-    /* assert(((uintptr_t)baseaddr & ((1 << 21) - 1)) == 0);  // 2MB alignment check */
-
-	/* if ((ctx->memflags & VM_MEM_F_INCORE) == 0) { */
-	/* 	flags |= MAP_NOCORE; */
-	/* } */
-    
-    /* ptr = mmap(baseaddr, objsize, PROT_RW, flags, ctx->fd, 0);  */
-	/* if (ptr == MAP_FAILED) */
-	/* 	return (-1); */
-
-    
 
 	ctx->baseaddr = vm_create_devmem(ctx, VM_SYSMEM, name, objsize);
     return (0);

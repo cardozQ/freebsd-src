@@ -142,6 +142,10 @@ const struct vmmdev_ioctl vmmdev_machdep_ioctls[] = {
 #endif
 	VMMDEV_IOCTL(VM_INJECT_NMI, VMMDEV_IOCTL_LOCK_ONE_VCPU),
 	VMMDEV_IOCTL(VM_LAPIC_IRQ, VMMDEV_IOCTL_LOCK_ONE_VCPU),
+
+	VMMDEV_IOCTL(VM_LAPIC_SET_STATE, VMMDEV_IOCTL_LOCK_ONE_VCPU),
+	VMMDEV_IOCTL(VM_LAPIC_GET_STATE, VMMDEV_IOCTL_LOCK_ONE_VCPU),
+
 	VMMDEV_IOCTL(VM_GET_X2APIC_STATE, VMMDEV_IOCTL_LOCK_ONE_VCPU),
 
 	VMMDEV_IOCTL(VM_LAPIC_LOCAL_IRQ, VMMDEV_IOCTL_MAYBE_ALLOC_VCPU),
@@ -180,6 +184,7 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 	struct vm_run_13 *vmrun_13;
 #endif
 	struct vm_exception *vmexc;
+	struct vm_lapic_state *lapic_state;
 	struct vm_lapic_irq *vmirq;
 	struct vm_lapic_msi *vmmsi;
 	struct vm_ioapic_irq *ioapic_irq;
@@ -204,6 +209,8 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 #endif
 	int error;
 
+    lapic_state = malloc(sizeof(struct vm_lapic_state), M_TEMP, M_ZERO | M_WAITOK);
+    
 	error = 0;
 	switch (cmd) {
 	case VM_RUN: {
@@ -333,6 +340,20 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 	case VM_INJECT_NMI:
 		error = vm_inject_nmi(vcpu);
 		break;
+	case VM_LAPIC_SET_STATE:
+        error = copyin(data, lapic_state, sizeof(struct vm_lapic_state));
+        if (error) {
+            break;
+        }
+        error = lapic_set_state(vcpu, lapic_state);
+        break;
+	case VM_LAPIC_GET_STATE:
+		error = lapic_get_state(vcpu, lapic_state);
+		if (error) {
+            break;
+		}
+        error = copyout(lapic_state, data, sizeof(struct vm_lapic_state));
+        break;
 	case VM_LAPIC_IRQ:
 		vmirq = (struct vm_lapic_irq *)data;
 		error = lapic_intr_edge(vcpu, vmirq->vector);

@@ -64,6 +64,9 @@ enum vm_mmap_style {
 #define	VM_MEM_F_INCORE	0x01	/* include guest memory in core file */
 #define	VM_MEM_F_WIRED	0x02	/* guest memory is wired */
 
+typedef void (*qmem_callback_t)(struct vm_qmem*);
+typedef void (*qio_callback_t)(struct vm_qio*);
+
 /*
  * Identifiers for memory segments:
  * - vm_setup_memory() uses VM_SYSMEM for the system memory segment.
@@ -132,7 +135,11 @@ int	vm_setup_memory(struct vmctx *ctx, size_t len, enum vm_mmap_style s);
 #ifdef __amd64__
 int	vm_set_flags(struct vmctx *ctx, int flags);
 int	vm_get_flags(struct vmctx *ctx, int *flags);
-int	vm_setup_memory_qemu(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, const char* name);
+int	vm_setup_qmemory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, const char* name);
+
+/* Register QEMU callbacks */
+int vm_assist_qmem(struct vcpu* vcpu, qmem_callback_t mem_callback, struct vm_exit* vme);
+int vm_assist_qio(struct vcpu* vcpu, qio_callback_t io_callback, struct vm_exit* vme);
 #endif
 void	*vm_map_gpa(struct vmctx *ctx, vm_paddr_t gaddr, size_t len);
 /* inverse operation to vm_map_gpa - extract guest address from host pointer */
@@ -186,6 +193,8 @@ int	vm_deassert_irq(struct vmctx *ctx, uint32_t irq);
 int	vm_apicid2vcpu(struct vmctx *ctx, int apicid);
 int	vm_inject_exception(struct vcpu *vcpu, int vector,
     int errcode_valid, uint32_t errcode, int restart_instruction);
+int vm_lapic_set_state(struct vcpu *vcpu, vm_lapic_state* apic_page);
+int vm_lapic_get_state(struct vcpu *vcpu, vm_lapic_state* apic_page);
 int	vm_lapic_irq(struct vcpu *vcpu, int vector);
 int	vm_lapic_local_irq(struct vcpu *vcpu, int vector);
 int	vm_lapic_msi(struct vmctx *ctx, uint64_t addr, uint64_t msg);

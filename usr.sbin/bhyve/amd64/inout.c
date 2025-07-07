@@ -100,6 +100,7 @@ register_default_iohandler(int start, int size)
 int
 emulate_inout(struct vmctx *ctx, struct vcpu *vcpu, struct vm_exit *vmexit)
 {
+    /* TODO: Use vm_assist_qio */
 	int addrsize, bytes, flags, in, port, prot, rep;
 	uint32_t eax, val;
 	inout_func_t handler;
