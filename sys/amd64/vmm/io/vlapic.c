@@ -1904,4 +1904,10 @@ vlapic_snapshot(struct vm *vm, struct vm_snapshot_meta *meta)
 done:
 	return (ret);
 }
+
+struct LAPIC *
+vlapic_page(struct vlapic *vlapic)
+{
+  return vlapic->apic_page;
+}
 #endif

@@ -50,7 +50,7 @@
 int
 lapic_get_state(struct vcpu *vcpu, struct vm_lapic_state *lapic_state)
 {
-	struct LAPIC *klapic = vm_lapic(vcpu)->apic_page;
+    struct LAPIC *klapic = vlapic_page(vm_lapic(vcpu));
     #define COPY_FIELD(name, index) lapic_state->fields[index].data = klapic->name;
 
     #define RANGE_COPY_FIELD(name, index, i) COPY_FIELD(name##i, index##i);
@@ -115,7 +115,7 @@ lapic_get_state(struct vcpu *vcpu, struct vm_lapic_state *lapic_state)
 int
 lapic_set_state(struct vcpu *vcpu, struct vm_lapic_state *lapic_state)
 {
-	struct LAPIC *klapic = vm_lapic(vcpu)->apic_page;
+    struct LAPIC *klapic = vlapic_page(vm_lapic(vcpu));
     #define COPY_FIELD(name, index) \
         klapic->name = lapic_state->fields[index].data;
 
