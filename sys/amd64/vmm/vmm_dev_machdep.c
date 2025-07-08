@@ -36,6 +36,8 @@
 #include <sys/mman.h>
 #include <sys/uio.h>
 #include <sys/proc.h>
+#include <sys/malloc.h>
+#include <sys/types.h>
 
 #include <vm/vm.h>
 #include <vm/pmap.h>
