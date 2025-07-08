@@ -33,7 +33,7 @@
 #include <sys/sdt.h>
 #include <x86/segments.h>
 
-#include <stdbool.h>
+#include <sys/types.h>
 
 struct vcpu;
 struct vm_snapshot_meta;
