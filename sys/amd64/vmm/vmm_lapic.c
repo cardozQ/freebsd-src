@@ -110,6 +110,7 @@ lapic_get_state(struct vcpu *vcpu, struct vm_lapic_state *lapic_state)
 
     #undef COPY_FIELD
     #undef RANGE_COPY_FIELD
+    return 0;
 }
 
 int
@@ -176,6 +177,7 @@ lapic_set_state(struct vcpu *vcpu, struct vm_lapic_state *lapic_state)
 
     #undef COPY_FIELD
     #undef RANGE_COPY_FIELD
+    return 0;
 }
 
 int
