@@ -193,8 +193,8 @@ int	vm_deassert_irq(struct vmctx *ctx, uint32_t irq);
 int	vm_apicid2vcpu(struct vmctx *ctx, int apicid);
 int	vm_inject_exception(struct vcpu *vcpu, int vector,
     int errcode_valid, uint32_t errcode, int restart_instruction);
-int vm_lapic_set_state(struct vcpu *vcpu, vm_lapic_state* apic_page);
-int vm_lapic_get_state(struct vcpu *vcpu, vm_lapic_state* apic_page);
+int vm_lapic_set_state(struct vcpu *vcpu, struct vm_lapic_state* apic_page);
+int vm_lapic_get_state(struct vcpu *vcpu, struct vm_lapic_state* apic_page);
 int	vm_lapic_irq(struct vcpu *vcpu, int vector);
 int	vm_lapic_local_irq(struct vcpu *vcpu, int vector);
 int	vm_lapic_msi(struct vmctx *ctx, uint64_t addr, uint64_t msg);
