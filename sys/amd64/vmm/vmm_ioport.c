@@ -104,12 +104,15 @@ emulate_inout_port(struct vcpu *vcpu, struct vm_exit *vmexit, bool *retu)
 	uint32_t mask, val = 0;
 	int error;
 
+	int flags;
+    vm_get_flags(vcpu_vm(vcpu), &flags);
+
 	/*
 	 * If there is no handler for the I/O port then punt to userspace.
 	 */
 	if (vmexit->u.inout.port >= MAX_IOPORTS ||
 	    (handler = ioport_handler[vmexit->u.inout.port]) == NULL ||
-	    vcpu->vm->flags & VM_OP_F_QEMU) {
+	    flags & VM_OP_F_QEMU) {
 		*retu = true;
 		return (0);
 	}
