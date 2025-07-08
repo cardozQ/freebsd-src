@@ -533,14 +533,14 @@ struct vm_guest_paging {
 	enum vm_paging_mode paging_mode;
 };
 
-struct vmm_qmem {
+struct vm_qmem {
     vm_paddr_t gpa;
     bool write;
     size_t size;
     uint8_t *data;
 };
 
-struct vmm_qio {
+struct vm_qio {
 	uint16_t port;
 	bool in;
 	size_t size;

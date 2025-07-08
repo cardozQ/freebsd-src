@@ -116,7 +116,7 @@ static int
 mem_read(struct vcpu *vcpu, uint64_t gpa, uint64_t *rval, int size, void *arg)
 {
 	qmem_callback_t mem_callback = arg;
-	struct vmm_qmem mem_args = {
+	struct vm_qmem mem_args = {
 		.gpa = gpa,
 		.write = false,
 		.size = size,
@@ -130,7 +130,7 @@ static int
 mem_write(struct vcpu *vcpu, uint64_t gpa, uint64_t wval, int size, void *arg)
 {
 	qmem_callback_t mem_callback = arg;
-	struct vmm_qmem mem_args = {
+	struct vm_qmem mem_args = {
 		.gpa = gpa,
 		.write = true,
 		.size = size,
@@ -182,7 +182,7 @@ vm_assist_qio(struct vcpu* vcpu, qio_callback_t io_callback, struct vm_exit* vme
 	uint64_t gla, index, iterations, count;
 	struct vm_inout_str *vis;
 	struct iovec iov[2];
-    struct vmm_qio io_args;
+    struct vm_qio io_args;
 
 	bytes = vmexit->u.inout.bytes;
 	in = vmexit->u.inout.in;
