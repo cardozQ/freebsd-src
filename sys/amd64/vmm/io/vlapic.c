@@ -1905,9 +1905,10 @@ done:
 	return (ret);
 }
 
+#endif
+
 struct LAPIC *
 vlapic_page(struct vlapic *vlapic)
 {
   return vlapic->apic_page;
 }
-#endif
