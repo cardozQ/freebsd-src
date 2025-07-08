@@ -28,14 +28,17 @@
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
+#include <sys/_iovec.h>
 
 #include <machine/specialreg.h>
+#include <machine/psl.h>
 #include <machine/vmm.h>
 #include <machine/vmm_dev.h>
 #include <machine/vmm_snapshot.h>
 #include <machine/vmm_instruction_emul.h>
 
 #include <string.h>
+#include <assert.h>
 
 #include "vmmapi.h"
 #include "internal.h"
@@ -120,7 +123,7 @@ mem_read(struct vcpu *vcpu, uint64_t gpa, uint64_t *rval, int size, void *arg)
 		.gpa = gpa,
 		.write = false,
 		.size = size,
-        .data = rval
+        .data = (uint8_t*)rval
 	};
     mem_callback(&mem_args);
     return 0;
@@ -134,7 +137,7 @@ mem_write(struct vcpu *vcpu, uint64_t gpa, uint64_t wval, int size, void *arg)
 		.gpa = gpa,
 		.write = true,
 		.size = size,
-        .data = &wval
+        .data = (uint8_t*)&wval
 	};
     mem_callback(&mem_args);
     return 0;
@@ -165,7 +168,7 @@ vm_assist_qmem(struct vcpu* vcpu, qmem_callback_t mem_callback, struct vm_exit* 
 			goto fail;
 	}
 	return (vmm_emulate_instruction(vcpu, vmexit->u.inst_emul.gpa, vie, &vmexit->u.inst_emul.paging, mem_read,
-                                    mem_write, qmem_callback));
+                                    mem_write, mem_callback));
 fail:
     return -1;
 }
@@ -175,7 +178,6 @@ vm_assist_qio(struct vcpu* vcpu, qio_callback_t io_callback, struct vm_exit* vme
 {
 	int addrsize, bytes, flags, in, port, prot, rep;
 	uint32_t eax, val;
-	inout_func_t handler;
 	void *arg;
 	int error, fault, retval;
 	enum vm_reg_name idxreg;
@@ -240,15 +242,11 @@ vm_assist_qio(struct vcpu* vcpu, qio_callback_t io_callback, struct vm_exit* vme
 			if (!in)
 				vm_copyin(iov, &val, bytes);
 
-			io_args = {
-				.port = port,
-				.in = in,
-				.size = bytes,
-                .data = &val
-			};
+			io_args.port = port;
+			io_args.in = in;
+			io_args.size = bytes;
+            io_args.data = &val;
 			retval = io_callback(&io_args);
-			if (retval != 0)
-				break;
 
 			if (in)
 				vm_copyout(&val, iov, bytes);
@@ -285,12 +283,10 @@ vm_assist_qio(struct vcpu* vcpu, qio_callback_t io_callback, struct vm_exit* vme
 	} else {
 		eax = vmexit->u.inout.eax;
 		val = eax & vie_size2mask(bytes);
-        io_args = {
-            .port = port,
-            .in = in,
-            .size = bytes,
-            .data = &val
-        };
+        io_args.port = port;
+        io_args.in = in;
+        io_args.size = bytes;
+        io_args.data = &val;
         retval = io_callback(&io_args);
 		if (retval == 0 && in) {
 			eax &= ~vie_size2mask(bytes);

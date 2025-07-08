@@ -64,8 +64,8 @@ enum vm_mmap_style {
 #define	VM_MEM_F_INCORE	0x01	/* include guest memory in core file */
 #define	VM_MEM_F_WIRED	0x02	/* guest memory is wired */
 
-typedef void (*qmem_callback_t)(struct vm_qmem*);
-typedef void (*qio_callback_t)(struct vm_qio*);
+typedef int (*qmem_callback_t)(struct vm_qmem*);
+typedef int (*qio_callback_t)(struct vm_qio*);
 
 /*
  * Identifiers for memory segments:
