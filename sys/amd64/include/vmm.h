@@ -152,6 +152,7 @@ enum x2apic_state {
 #ifdef _KERNEL
 
 #include <sys/kassert.h>
+#include <sys/types.h>
 
 CTASSERT(VM_MAX_NAMELEN >= VM_MIN_NAMELEN);
 
