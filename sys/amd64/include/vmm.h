@@ -538,14 +538,14 @@ struct vm_guest_paging {
 
 struct vm_qmem {
     vm_paddr_t gpa;
-    bool write;
+    int write;
     size_t size;
     uint8_t *data;
 };
 
 struct vm_qio {
 	uint16_t port;
-	bool in;
+	int in;
 	size_t size;
     uint8_t *data;
 };
