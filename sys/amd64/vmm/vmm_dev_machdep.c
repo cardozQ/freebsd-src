@@ -344,6 +344,7 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 		break;
 	case VM_LAPIC_SET_STATE:
         error = copyin(data, lapic_state, sizeof(struct vm_lapic_state));
+        printf("%SET_STATE_ERROR: d\n", error);
         if (error) {
             break;
         }

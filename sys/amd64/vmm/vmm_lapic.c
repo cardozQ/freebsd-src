@@ -116,9 +116,11 @@ lapic_get_state(struct vcpu *vcpu, struct vm_lapic_state *lapic_state)
 int
 lapic_set_state(struct vcpu *vcpu, struct vm_lapic_state *lapic_state)
 {
+    printf("Got here\n");
     struct LAPIC *klapic = vlapic_page(vm_lapic(vcpu));
     #define COPY_FIELD(name, index) \
         klapic->name = lapic_state->fields[index].data;
+    printf("Got here\n");
 
     #define RANGE_COPY_FIELD(name, index, i) COPY_FIELD(name##i, index##i);
 
