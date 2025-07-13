@@ -261,6 +261,8 @@ lapic_intr_msi(struct vm *vm, uint64_t addr, uint64_t msg)
 	VM_CTR3(vm, "lapic MSI %s dest %#x, vec %d",
 	    phys ? "physical" : "logical", dest, vec);
 
+    printf("lapic_msi: dest=%#x, phys=%d, delmode=%#x, vec=%#x\n", dest, phys, delmode, vec);
+
 	vlapic_deliver_intr(vm, LAPIC_TRIG_EDGE, dest, phys, delmode, vec);
 	return (0);
 }
