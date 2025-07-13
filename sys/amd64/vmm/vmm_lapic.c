@@ -231,11 +231,12 @@ lapic_intr_msi(struct vm *vm, uint64_t addr, uint64_t msg)
 	uint32_t dest;
 	bool phys;
 
-	VM_CTR2(vm, "lapic MSI addr: %#lx msg: %#lx", addr, msg);
-    printf("vmm Entered\n");
+	int flags;
+    vm_get_flags(vm, &flags);
 
-	if ((addr & MSI_X86_ADDR_MASK) != MSI_X86_ADDR_BASE) {
-        printf("vmm Point 1\n");
+	VM_CTR2(vm, "lapic MSI addr: %#lx msg: %#lx", addr, msg);
+
+	if (!(flags & VM_OP_F_QEMU) && (addr & MSI_X86_ADDR_MASK) != MSI_X86_ADDR_BASE) {
 		VM_CTR1(vm, "lapic MSI invalid addr %#lx", addr);
 		return (-1);
 	}
@@ -260,7 +261,6 @@ lapic_intr_msi(struct vm *vm, uint64_t addr, uint64_t msg)
 	VM_CTR3(vm, "lapic MSI %s dest %#x, vec %d",
 	    phys ? "physical" : "logical", dest, vec);
 
-    printf("vmm Point 2: dest %d phys %d delmode %d vec %d\n", dest, phys, delmode, vec);
 	vlapic_deliver_intr(vm, LAPIC_TRIG_EDGE, dest, phys, delmode, vec);
 	return (0);
 }
