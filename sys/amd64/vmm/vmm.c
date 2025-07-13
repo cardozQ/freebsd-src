@@ -1376,6 +1376,7 @@ vm_handle_inst_emul(struct vcpu *vcpu, bool *retu)
 	if (gpa >= DEFAULT_APIC_BASE && gpa < DEFAULT_APIC_BASE + PAGE_SIZE) {
 		mread = lapic_mmio_read;
 		mwrite = lapic_mmio_write;
+        printf("mmio Got here\n");
 	} else if (vcpu->vm->flags & VM_OP_F_QEMU) {
 		*retu = true;
         return (0);
