@@ -182,7 +182,7 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
 			return (EEXIST);
 		else {
 
-            printf("Inside here 1\n");
+            printf("Inside here 2\n");
             printf("len: %zu, sysmem: %s, object: %p\n", seg->len, seg->sysmem ? "true" : "false", (void *)seg->object);
 
 			return (EINVAL);
@@ -190,7 +190,7 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
 	}
 
 	obj = vm_object_allocate(OBJT_SWAP, len >> PAGE_SHIFT);
-    printf("Inside here 1\n");
+    printf("Inside here 3\n");
 	if (obj == NULL)
 		return (ENOMEM);
 
