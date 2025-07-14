@@ -168,13 +168,16 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
     vm_get_flags(vm, &flags);
 	vm_assert_memseg_xlocked(vm);
 
+    printf("Got here 1\n");
 	if (ident < 0 || ident >= VM_MAX_MEMSEGS) {
 		return (EINVAL);
     }
 
+    printf("Got here 2\n");
 	if (len == 0 || (len & PAGE_MASK))
 		return (EINVAL);
 
+    printf("Got here 3\n");
 	seg = &mem->mem_segs[ident];
 	if (seg->object != NULL) {
 		if (seg->len == len && seg->sysmem == sysmem)
@@ -184,6 +187,7 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
         }
 	}
 
+    printf("Got here 4\n");
 	obj = vm_object_allocate(OBJT_SWAP, len >> PAGE_SHIFT);
 	if (obj == NULL)
 		return (ENOMEM);
