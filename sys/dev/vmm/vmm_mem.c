@@ -183,6 +183,7 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
 		else {
 
             printf("Inside here 1\n");
+            printf("len: %zu, sysmem: %s, object: %p\n", seg->len, seg->sysmem ? "true" : "false", (void *)seg->object);
 
 			return (EINVAL);
         }
