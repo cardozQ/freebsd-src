@@ -31,8 +31,8 @@ struct vm_mem_map {
 	int		flags;
 };
 
-#define	VM_MAX_MEMSEGS	5
-#define	VM_MAX_MEMMAPS  10	
+#define	VM_MAX_MEMSEGS	10
+#define	VM_MAX_MEMMAPS  20	
 
 struct vm_mem {
 	struct vm_mem_map	mem_maps[VM_MAX_MEMMAPS];
