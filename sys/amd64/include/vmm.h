@@ -140,7 +140,7 @@ enum x2apic_state {
  * a SPECNAMELEN as small as 32 on old systems.
  */
 #define VM_MAX_PREFIXLEN 10
-#define VM_MAX_SUFFIXLEN 15
+#define VM_MAX_SUFFIXLEN 17
 #define VM_MIN_NAMELEN   6
 #define VM_MAX_NAMELEN \
     (SPECNAMELEN - VM_MAX_PREFIXLEN - VM_MAX_SUFFIXLEN - 1)
