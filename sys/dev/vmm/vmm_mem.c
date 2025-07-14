@@ -169,22 +169,27 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
 	vm_assert_memseg_xlocked(vm);
 
 	if (ident < 0 || (ident >= VM_MAX_MEMSEGS && !(flags & VM_OP_F_QEMU))) {
-		printf("Inside here\n");
 		return (EINVAL);
     }
 
 	if (len == 0 || (len & PAGE_MASK))
 		return (EINVAL);
 
+    printf("Inside here 1\n");
 	seg = &mem->mem_segs[ident];
 	if (seg->object != NULL) {
 		if (seg->len == len && seg->sysmem == sysmem)
 			return (EEXIST);
-		else
+		else {
+
+            printf("Inside here 1\n");
+
 			return (EINVAL);
+        }
 	}
 
 	obj = vm_object_allocate(OBJT_SWAP, len >> PAGE_SHIFT);
+    printf("Inside here 1\n");
 	if (obj == NULL)
 		return (ENOMEM);
 
