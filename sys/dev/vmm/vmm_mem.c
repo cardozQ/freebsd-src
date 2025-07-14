@@ -161,11 +161,14 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
 	struct vm_mem *mem;
 	struct vm_mem_seg *seg;
 	vm_object_t obj;
+    int flags;
+  
 
 	mem = vm_mem(vm);
+    vm_get_flags(&flags);
 	vm_assert_memseg_xlocked(vm);
 
-	if (ident < 0 || ident >= VM_MAX_MEMSEGS)
+	if (ident < 0 || (ident >= VM_MAX_MEMSEGS && !(flags & VM_OP_F_QEMU)))
 		return (EINVAL);
 
 	if (len == 0 || (len & PAGE_MASK))
