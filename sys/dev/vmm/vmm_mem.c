@@ -168,6 +168,7 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
     vm_get_flags(vm, &flags);
 	vm_assert_memseg_xlocked(vm);
 
+    printf("Inside here 0\n");
 	if (ident < 0 || (ident >= VM_MAX_MEMSEGS && !(flags & VM_OP_F_QEMU))) {
 		return (EINVAL);
     }
