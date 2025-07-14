@@ -121,7 +121,7 @@ enum vm_reg_name {
  * a SPECNAMELEN as small as 32 on old systems.
  */
 #define VM_MAX_PREFIXLEN 10
-#define VM_MAX_SUFFIXLEN 25
+#define VM_MAX_SUFFIXLEN 15
 #define VM_MAX_NAMELEN \
     (SPECNAMELEN - VM_MAX_PREFIXLEN - VM_MAX_SUFFIXLEN - 1)
 
