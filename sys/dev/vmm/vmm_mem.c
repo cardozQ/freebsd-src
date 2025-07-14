@@ -166,6 +166,7 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
 
 	mem = vm_mem(vm);
     vm_get_flags(vm, &flags);
+    printf("Got here 0\n");
 	vm_assert_memseg_xlocked(vm);
 
     printf("Got here 1\n");
