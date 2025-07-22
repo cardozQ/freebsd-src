@@ -119,7 +119,8 @@ emulate_inout_port(struct vcpu *vcpu, struct vm_exit *vmexit, bool *retu)
         case IO_ICU2 + ICU_IMR_OFFSET:
         case IO_ELCR1:
         case IO_ELCR2:
-            goto kernel_handler;
+            if((handler = ioport_handler[vmexit->u.inout.port]) != NULL)
+                goto kernel_handler;
         default:
             *retu = true;
             return (0);
