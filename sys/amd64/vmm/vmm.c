@@ -660,14 +660,14 @@ vm_get_flags(struct vm *vm, int *vflags)
 static void
 setup_qemu_mode(struct vm *vm)
 {
+	// Keep vatpic
+    
 	vpmtmr_cleanup(vm->vpmtmr);
     vm->vpmtmr = NULL;
 	vatpit_cleanup(vm->vatpit);
     vm->vatpit = NULL;
 	vhpet_cleanup(vm->vhpet);
     vm->vhpet = NULL;
-	vatpic_cleanup(vm->vatpic);
-    vm->vatpic = NULL;
 	vioapic_cleanup(vm->vioapic);
     vm->vioapic = NULL;
 	if (vm->vrtc) {
@@ -710,7 +710,6 @@ vm_cleanup(struct vm *vm, bool destroy)
         vpmtmr_cleanup(vm->vpmtmr);
         vatpit_cleanup(vm->vatpit);
         vhpet_cleanup(vm->vhpet);
-        vatpic_cleanup(vm->vatpic);
         vioapic_cleanup(vm->vioapic);
     }
 
