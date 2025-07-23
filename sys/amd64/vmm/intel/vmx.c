@@ -2756,6 +2756,7 @@ vmx_exit_process(struct vmx *vmx, struct vmx_vcpu *vcpu, struct vm_exit *vmexit)
 		 * memory then this must be a nested page fault otherwise
 		 * this must be an instruction that accesses MMIO space.
 		 */
+        printf("Got herr\n");
 		gpa = vmcs_gpa();
 		if (vm_mem_allocated(vcpu->vcpu, gpa) ||
 		    ppt_is_mmio(vmx->vm, gpa) || apic_access_fault(vcpu, gpa)) {
@@ -2767,7 +2768,6 @@ vmx_exit_process(struct vmx *vmx, struct vmx_vcpu *vcpu, struct vm_exit *vmexit)
 			SDT_PROBE5(vmm, vmx, exit, nestedfault,
 			    vmx, vcpuid, vmexit, gpa, qual);
 		} else if (ept_emulation_fault(qual)) {
-          printf("Got herr\n");
 			vmexit_inst_emul(vmexit, gpa, vmcs_gla());
 			vmm_stat_incr(vcpu->vcpu, VMEXIT_INST_EMUL, 1);
 			SDT_PROBE4(vmm, vmx, exit, mmiofault,
