@@ -2767,6 +2767,7 @@ vmx_exit_process(struct vmx *vmx, struct vmx_vcpu *vcpu, struct vm_exit *vmexit)
 			SDT_PROBE5(vmm, vmx, exit, nestedfault,
 			    vmx, vcpuid, vmexit, gpa, qual);
 		} else if (ept_emulation_fault(qual)) {
+          printf("Got herr\n");
 			vmexit_inst_emul(vmexit, gpa, vmcs_gla());
 			vmm_stat_incr(vcpu->vcpu, VMEXIT_INST_EMUL, 1);
 			SDT_PROBE4(vmm, vmx, exit, mmiofault,
