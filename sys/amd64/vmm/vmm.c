@@ -1359,6 +1359,7 @@ vm_handle_inst_emul(struct vcpu *vcpu, bool *retu)
 	if (vmm_decode_instruction(vcpu, gla, cpu_mode, cs_d, vie) != 0) {
 		VMM_CTR1(vcpu, "Error decoding instruction at %#lx",
 		    vme->rip + cs_base);
+        printf("Got here super\n");
 		*retu = true;	    /* dump instruction bytes in userspace */
 		return (0);
 	}
