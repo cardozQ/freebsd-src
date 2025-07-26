@@ -191,6 +191,7 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
 	seg->len = len;
 	seg->object = obj;
 	seg->sysmem = sysmem;
+    printf("ALLOC: %p\n", seg->object);
 	return (0);
 }
 
