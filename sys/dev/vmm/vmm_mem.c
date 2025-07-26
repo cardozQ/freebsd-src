@@ -166,19 +166,15 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
 
 	mem = vm_mem(vm);
     vm_get_flags(vm, &flags);
-    printf("Got here 0\n");
 	vm_assert_memseg_xlocked(vm);
 
-    printf("Got here 1\n");
 	if (ident < 0 || ident >= VM_MAX_MEMSEGS) {
 		return (EINVAL);
     }
 
-    printf("Got here 2\n");
 	if (len == 0 || (len & PAGE_MASK))
 		return (EINVAL);
 
-    printf("Got here 3\n");
 	seg = &mem->mem_segs[ident];
 	if (seg->object != NULL) {
 		if (seg->len == len && seg->sysmem == sysmem)
@@ -188,7 +184,6 @@ vm_alloc_memseg(struct vm *vm, int ident, size_t len, bool sysmem)
         }
 	}
 
-    printf("Got here 4\n");
 	obj = vm_object_allocate(OBJT_SWAP, len >> PAGE_SHIFT);
 	if (obj == NULL)
 		return (ENOMEM);
@@ -249,27 +244,34 @@ vm_mmap_memseg(struct vm *vm, vm_paddr_t gpa, int segid, vm_ooffset_t first,
 	vm_ooffset_t last;
 	int i, error;
 
+    printf("Got here 1\n");
 	if (prot == 0 || (prot & ~(VM_PROT_ALL)) != 0)
 		return (EINVAL);
 
+    printf("Got here 2\n");
 	if (flags & ~VM_MEMMAP_F_WIRED)
 		return (EINVAL);
 
+    printf("Got here 3\n");
 	if (segid < 0 || segid >= VM_MAX_MEMSEGS)
 		return (EINVAL);
 
+    printf("Got here 4\n");
 	mem = vm_mem(vm);
 	seg = &mem->mem_segs[segid];
 	if (seg->object == NULL)
 		return (EINVAL);
 
+    printf("Got here 5\n");
 	last = first + len;
 	if (first < 0 || first >= last || last > seg->len)
 		return (EINVAL);
 
+    printf("Got here 6\n");
 	if ((gpa | first | last) & PAGE_MASK)
 		return (EINVAL);
 
+    printf("Got here 7\n");
 	map = NULL;
 	for (i = 0; i < VM_MAX_MEMMAPS; i++) {
 		m = &mem->mem_maps[i];
@@ -281,6 +283,7 @@ vm_mmap_memseg(struct vm *vm, vm_paddr_t gpa, int segid, vm_ooffset_t first,
 	if (map == NULL)
 		return (ENOSPC);
 
+    printf("Got here 8\n");
 	vmspace = vm_vmspace(vm);
 	error = vm_map_find(&vmspace->vm_map, seg->object, first, &gpa,
 	    len, 0, VMFS_NO_SPACE, prot, prot, 0);
@@ -289,6 +292,7 @@ vm_mmap_memseg(struct vm *vm, vm_paddr_t gpa, int segid, vm_ooffset_t first,
 
 	vm_object_reference(seg->object);
 
+    printf("Got here 9\n");
 	if (flags & VM_MEMMAP_F_WIRED) {
 		error = vm_map_wire(&vmspace->vm_map, gpa, gpa + len,
 		    VM_MAP_WIRE_USER | VM_MAP_WIRE_NOHOLES);
