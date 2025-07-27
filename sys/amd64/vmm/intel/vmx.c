@@ -2471,7 +2471,7 @@ vmx_exit_process(struct vmx *vmx, struct vmx_vcpu *vcpu, struct vm_exit *vmexit)
 			vmcs_write(VMCS_ENTRY_INST_LENGTH, vmexit->inst_length);
 		}
 	}
-    printf("Exit Reason: %d\n", reason)
+    printf("Exit Reason: %d\n", reason);
 	switch (reason) {
 	case EXIT_REASON_TASK_SWITCH:
 		ts = &vmexit->u.task_switch;
