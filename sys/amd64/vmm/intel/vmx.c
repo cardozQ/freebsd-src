@@ -2471,7 +2471,7 @@ vmx_exit_process(struct vmx *vmx, struct vmx_vcpu *vcpu, struct vm_exit *vmexit)
 			vmcs_write(VMCS_ENTRY_INST_LENGTH, vmexit->inst_length);
 		}
 	}
-    printf("Exit Reason: %d\n", reason);
+    
 	switch (reason) {
 	case EXIT_REASON_TASK_SWITCH:
 		ts = &vmexit->u.task_switch;
@@ -3203,6 +3203,9 @@ vmx_run(void *vcpui, register_t rip, pmap_t pmap, struct vm_eventinfo *evinfo)
 		vmexit->inst_length = vmexit_instruction_length();
 		vmexit->u.vmx.exit_reason = exit_reason = vmcs_exit_reason();
 		vmexit->u.vmx.exit_qualification = vmcs_exit_qualification();
+
+        printf("Exit reason: %d\n", exit_reason);
+        printf("Exit qual: %d\n", exit_qualification);
 
 		/* Update 'nextrip' */
 		vcpu->state.nextrip = rip;
