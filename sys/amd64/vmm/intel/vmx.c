@@ -2602,7 +2602,6 @@ vmx_exit_process(struct vmx *vmx, struct vmx_vcpu *vcpu, struct vm_exit *vmexit)
 		vmx_clear_int_window_exiting(vcpu);
 		return (1);
 	case EXIT_REASON_EXT_INTR:
-        printf("Hi I got here\n");
 		/*
 		 * External interrupts serve only to cause VM exits and allow
 		 * the host interrupt handler to run.
@@ -2626,6 +2625,7 @@ vmx_exit_process(struct vmx *vmx, struct vmx_vcpu *vcpu, struct vm_exit *vmexit)
 		    (intr_info & VMCS_INTR_T_MASK) == VMCS_INTR_T_HWINTR,
 		    ("VM exit interruption info invalid: %#x", intr_info));
 		vmx_trigger_hostintr(intr_info & 0xff);
+        printf("Hi I got here\n");
 
 		/*
 		 * This is special. We want to treat this as an 'handled'
