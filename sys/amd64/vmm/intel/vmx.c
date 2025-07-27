@@ -1016,8 +1016,8 @@ vmx_trigger_hostintr(int vector)
 	KASSERT(gd->gd_ist == 0, ("gate descriptor for vector %d has invalid "
 	    "IST %d", vector, gd->gd_ist));
 
-    printf("Hi I got here\n");
 	func = ((long)gd->gd_hioffset << 16 | gd->gd_looffset);
+    printf("%d\n", vector);
 	vmx_call_isr(func);
 }
 
