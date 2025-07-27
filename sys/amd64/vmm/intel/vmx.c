@@ -1016,6 +1016,7 @@ vmx_trigger_hostintr(int vector)
 	KASSERT(gd->gd_ist == 0, ("gate descriptor for vector %d has invalid "
 	    "IST %d", vector, gd->gd_ist));
 
+    printf("Hi I got here\n");
 	func = ((long)gd->gd_hioffset << 16 | gd->gd_looffset);
 	vmx_call_isr(func);
 }
@@ -2625,7 +2626,6 @@ vmx_exit_process(struct vmx *vmx, struct vmx_vcpu *vcpu, struct vm_exit *vmexit)
 		    (intr_info & VMCS_INTR_T_MASK) == VMCS_INTR_T_HWINTR,
 		    ("VM exit interruption info invalid: %#x", intr_info));
 		vmx_trigger_hostintr(intr_info & 0xff);
-        printf("Hi I got here\n");
 
 		/*
 		 * This is special. We want to treat this as an 'handled'
