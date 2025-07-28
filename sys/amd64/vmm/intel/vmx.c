@@ -1485,6 +1485,7 @@ vmx_inject_interrupts(struct vmx_vcpu *vcpu, struct vlapic *vlapic,
 	}
 
 	if (vm_entry_intinfo(vcpu->vcpu, &entryinfo)) {
+        printf("Got here 1\n");
 		KASSERT((entryinfo & VMCS_INTR_VALID) != 0, ("%s: entry "
 		    "intinfo is not valid: %#lx", __func__, entryinfo));
 
@@ -1510,6 +1511,7 @@ vmx_inject_interrupts(struct vmx_vcpu *vcpu, struct vlapic *vlapic,
 	}
 
 	if (vm_nmi_pending(vcpu->vcpu)) {
+        printf("Got here 2\n");
 		/*
 		 * If there are no conditions blocking NMI injection then
 		 * inject it directly here otherwise enable "NMI window
@@ -1554,12 +1556,14 @@ vmx_inject_interrupts(struct vmx_vcpu *vcpu, struct vlapic *vlapic,
 	 * not needed for correctness.
 	 */
 	if ((vcpu->cap.proc_ctls & PROCBASED_INT_WINDOW_EXITING) != 0) {
+        printf("Got here 3\n");
 		VMX_CTR0(vcpu, "Skip interrupt injection due to "
 		    "pending int_window_exiting");
 		return;
 	}
 
 	if (!extint_pending) {
+        printf("Got here 4\n");
 		/* Ask the local apic for a vector to inject */
 		if (!vlapic_pending_intr(vlapic, &vector))
 			return;
@@ -1573,6 +1577,7 @@ vmx_inject_interrupts(struct vmx_vcpu *vcpu, struct vlapic *vlapic,
 		KASSERT(vector >= 16 && vector <= 255,
 		    ("invalid vector %d from local APIC", vector));
 	} else {
+        printf("Got here 5\n");
 		/* Ask the legacy pic for a vector to inject */
 		vatpic_pending_intr(vcpu->vmx->vm, &vector);
 
@@ -1615,6 +1620,7 @@ vmx_inject_interrupts(struct vmx_vcpu *vcpu, struct vlapic *vlapic,
 		goto cantinject;
 	}
 
+    printf("Got here 7\n");
 	/* Inject the interrupt */
 	info = VMCS_INTR_T_HWINTR | VMCS_INTR_VALID;
 	info |= vector;
