@@ -1563,11 +1563,11 @@ vmx_inject_interrupts(struct vmx_vcpu *vcpu, struct vlapic *vlapic,
 	}
 
 	if (!extint_pending) {
-        printf("Got here 4\n");
 		/* Ask the local apic for a vector to inject */
 		if (!vlapic_pending_intr(vlapic, &vector))
 			return;
 
+        printf("Got here 4\n");
 		/*
 		 * From the Intel SDM, Volume 3, Section "Maskable
 		 * Hardware Interrupts":
