@@ -2627,6 +2627,9 @@ vmx_exit_process(struct vmx *vmx, struct vmx_vcpu *vcpu, struct vm_exit *vmexit)
 		    ("VM exit interruption info invalid: %#x", intr_info));
 		vmx_trigger_hostintr(intr_info & 0xff);
 
+		intr_info = vmcs_read(VMCS_EXIT_INTR_INFO);
+		if ((intr_info & VMCS_INTR_VALID))
+            printf("Hello\n");
 		/*
 		 * This is special. We want to treat this as an 'handled'
 		 * VM-exit but not increment the instruction pointer.
