@@ -1623,6 +1623,7 @@ vmx_inject_interrupts(struct vmx_vcpu *vcpu, struct vlapic *vlapic,
 	if (!extint_pending) {
 		/* Update the Local APIC ISR */
 		vlapic_intr_accepted(vlapic, vector);
+        printf("Got here\n");
 	} else {
 		vm_extint_clear(vcpu->vcpu);
 		vatpic_intr_accepted(vcpu->vmx->vm, vector);
@@ -2628,8 +2629,6 @@ vmx_exit_process(struct vmx *vmx, struct vmx_vcpu *vcpu, struct vm_exit *vmexit)
 		vmx_trigger_hostintr(intr_info & 0xff);
 
 		intr_info = vmcs_read(VMCS_EXIT_INTR_INFO);
-		if ((intr_info & VMCS_INTR_VALID))
-            printf("Hello\n");
 		/*
 		 * This is special. We want to treat this as an 'handled'
 		 * VM-exit but not increment the instruction pointer.
