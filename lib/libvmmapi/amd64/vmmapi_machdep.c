@@ -119,25 +119,37 @@ static int
 mem_read(struct vcpu *vcpu, uint64_t gpa, uint64_t *rval, int size, void *arg)
 {
 	qmem_callback_t mem_callback = arg;
+  
+	uint8_t temp_data[sizeof(uint64_t)] = {0};
+
 	struct vm_qmem mem_args = {
 		.gpa = gpa,
 		.write = false,
 		.size = size,
-        .data = (uint8_t*)rval
+		.data = temp_data
 	};
-    mem_callback(&mem_args);
-    return 0;
+
+	mem_callback(&mem_args);
+
+	*rval = 0; // Clear it first
+	memcpy(rval, temp_data, size); // Copy only the 'size' bytes read
+
+	return 0;
 }
 
 static int
 mem_write(struct vcpu *vcpu, uint64_t gpa, uint64_t wval, int size, void *arg)
 {
 	qmem_callback_t mem_callback = arg;
+
+	uint8_t temp_data[sizeof(uint64_t)] = {};
+    memcpy(temp_data, &wval, sizeof(uint64_t));
+    
 	struct vm_qmem mem_args = {
 		.gpa = gpa,
 		.write = true,
 		.size = size,
-        .data = (uint8_t*)&wval
+        .data = temp_data 
 	};
     mem_callback(&mem_args);
     return 0;
