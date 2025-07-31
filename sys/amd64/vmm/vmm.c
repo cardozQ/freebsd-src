@@ -1602,6 +1602,7 @@ vm_run(struct vcpu *vcpu)
 
 	vcpuid = vcpu->vcpuid;
 
+    printf("Got here 1\n");
 	if (!CPU_ISSET(vcpuid, &vm->active_cpus))
 		return (EINVAL);
 
@@ -1636,6 +1637,7 @@ restart:
 
 	critical_exit();
 
+    printf("Got here 2\n");
 	if (error == 0) {
 		retu = false;
 		vcpu->nextrip = vme->rip + vme->inst_length;
@@ -1680,6 +1682,7 @@ restart:
 		}
 	}
 
+    printf("Got here 3\n");
 	/*
 	 * VM_EXITCODE_INST_EMUL could access the apic which could transform the
 	 * exit code into VM_EXITCODE_IPI.
