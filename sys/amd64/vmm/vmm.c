@@ -1644,37 +1644,47 @@ restart:
 		switch (vme->exitcode) {
 		case VM_EXITCODE_REQIDLE:
 			error = vm_handle_reqidle(vcpu, &retu);
+            printf("%d\n", error);
 			break;
 		case VM_EXITCODE_SUSPENDED:
 			error = vm_handle_suspend(vcpu, &retu);
+            printf("%d\n", error);
 			break;
 		case VM_EXITCODE_IOAPIC_EOI:
 			vioapic_process_eoi(vm, vme->u.ioapic_eoi.vector);
+            printf("%d\n", error);
 			break;
 		case VM_EXITCODE_RENDEZVOUS:
 			error = vm_handle_rendezvous(vcpu);
+            printf("%d\n", error);
 			break;
 		case VM_EXITCODE_HLT:
 			intr_disabled = ((vme->u.hlt.rflags & PSL_I) == 0);
 			error = vm_handle_hlt(vcpu, intr_disabled, &retu);
+            printf("%d\n", error);
 			break;
 		case VM_EXITCODE_PAGING:
 			error = vm_handle_paging(vcpu, &retu);
+            printf("%d\n", error);
 			break;
 		case VM_EXITCODE_INST_EMUL:
 			error = vm_handle_inst_emul(vcpu, &retu);
+            printf("%d\n", error);
 			break;
 		case VM_EXITCODE_INOUT:
 		case VM_EXITCODE_INOUT_STR:
 			error = vm_handle_inout(vcpu, vme, &retu);
+            printf("%d\n", error);
 			break;
 		case VM_EXITCODE_DB:
 			error = vm_handle_db(vcpu, vme, &retu);
+            printf("%d\n", error);
 			break;
 		case VM_EXITCODE_MONITOR:
 		case VM_EXITCODE_MWAIT:
 		case VM_EXITCODE_VMINSN:
 			vm_inject_ud(vcpu);
+            printf("%d\n", error);
 			break;
 		default:
 			retu = true;	/* handled in userland */
