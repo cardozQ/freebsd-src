@@ -1294,6 +1294,7 @@ vm_handle_paging(struct vcpu *vcpu, bool *retu)
 	    ("vm_handle_paging: invalid fault_type %d", ftype));
 
 	if (ftype == VM_PROT_READ || ftype == VM_PROT_WRITE) {
+        printf("GPA: %x\n", vme->u.paging.gpa);
 		rv = pmap_emulate_accessed_dirty(vmspace_pmap(vm->vmspace),
 		    vme->u.paging.gpa, ftype);
 		if (rv == 0) {
@@ -1305,6 +1306,8 @@ vm_handle_paging(struct vcpu *vcpu, bool *retu)
 	}
 
 	map = &vm->vmspace->vm_map;
+
+    printf("GPA: %x\n", vme->u.paging.gpa);
 	rv = vm_fault(map, vme->u.paging.gpa, ftype, VM_FAULT_NORMAL, NULL);
 
 	VMM_CTR3(vcpu, "vm_handle_paging rv = %d, gpa = %#lx, "
@@ -1602,7 +1605,6 @@ vm_run(struct vcpu *vcpu)
 
 	vcpuid = vcpu->vcpuid;
 
-    printf("Got here 1\n");
 	if (!CPU_ISSET(vcpuid, &vm->active_cpus))
 		return (EINVAL);
 
@@ -1637,54 +1639,43 @@ restart:
 
 	critical_exit();
 
-    printf("Got here 2\n");
 	if (error == 0) {
 		retu = false;
 		vcpu->nextrip = vme->rip + vme->inst_length;
 		switch (vme->exitcode) {
 		case VM_EXITCODE_REQIDLE:
 			error = vm_handle_reqidle(vcpu, &retu);
-            printf("1: %d\n", error);
 			break;
 		case VM_EXITCODE_SUSPENDED:
 			error = vm_handle_suspend(vcpu, &retu);
-            printf("2: %d\n", error);
 			break;
 		case VM_EXITCODE_IOAPIC_EOI:
 			vioapic_process_eoi(vm, vme->u.ioapic_eoi.vector);
-            printf("3: %d\n", error);
 			break;
 		case VM_EXITCODE_RENDEZVOUS:
 			error = vm_handle_rendezvous(vcpu);
-            printf("4: %d\n", error);
 			break;
 		case VM_EXITCODE_HLT:
 			intr_disabled = ((vme->u.hlt.rflags & PSL_I) == 0);
 			error = vm_handle_hlt(vcpu, intr_disabled, &retu);
-            printf("5: %d\n", error);
 			break;
 		case VM_EXITCODE_PAGING:
 			error = vm_handle_paging(vcpu, &retu);
-            printf("6: %d\n", error);
 			break;
 		case VM_EXITCODE_INST_EMUL:
 			error = vm_handle_inst_emul(vcpu, &retu);
-            printf("7: %d\n", error);
 			break;
 		case VM_EXITCODE_INOUT:
 		case VM_EXITCODE_INOUT_STR:
 			error = vm_handle_inout(vcpu, vme, &retu);
-            printf("8: %d\n", error);
 			break;
 		case VM_EXITCODE_DB:
 			error = vm_handle_db(vcpu, vme, &retu);
-            printf("9: %d\n", error);
 			break;
 		case VM_EXITCODE_MONITOR:
 		case VM_EXITCODE_MWAIT:
 		case VM_EXITCODE_VMINSN:
 			vm_inject_ud(vcpu);
-            printf("%d\n", error);
 			break;
 		default:
 			retu = true;	/* handled in userland */
@@ -1692,7 +1683,6 @@ restart:
 		}
 	}
 
-    printf("Got here 3\n");
 	/*
 	 * VM_EXITCODE_INST_EMUL could access the apic which could transform the
 	 * exit code into VM_EXITCODE_IPI.
