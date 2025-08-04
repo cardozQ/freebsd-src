@@ -660,7 +660,7 @@ vm_get_flags(struct vm *vm, int *vflags)
 static void
 setup_qemu_mode(struct vm *vm)
 {
-	// Keep vatpic
+	// Keep vatpic and ioapic
     
 	vpmtmr_cleanup(vm->vpmtmr);
     vm->vpmtmr = NULL;
@@ -668,8 +668,6 @@ setup_qemu_mode(struct vm *vm)
     vm->vatpit = NULL;
 	vhpet_cleanup(vm->vhpet);
     vm->vhpet = NULL;
-	vioapic_cleanup(vm->vioapic);
-    vm->vioapic = NULL;
 	if (vm->vrtc) {
         vrtc_cleanup(vm->vrtc);
         vm->vrtc = NULL;
@@ -710,8 +708,9 @@ vm_cleanup(struct vm *vm, bool destroy)
         vpmtmr_cleanup(vm->vpmtmr);
         vatpit_cleanup(vm->vatpit);
         vhpet_cleanup(vm->vhpet);
-        vioapic_cleanup(vm->vioapic);
     }
+    vioapic_cleanup(vm->vioapic);
+    vatpic_cleanup(vm->vatpic);
 
 	for (int i = 0; i < vm->maxcpus; i++) {
 		if (vm->vcpu[i] != NULL)
@@ -1378,12 +1377,12 @@ vm_handle_inst_emul(struct vcpu *vcpu, bool *retu)
 	if (gpa >= DEFAULT_APIC_BASE && gpa < DEFAULT_APIC_BASE + PAGE_SIZE) {
 		mread = lapic_mmio_read;
 		mwrite = lapic_mmio_write;
-	} else if (vcpu->vm->flags & VM_OP_F_QEMU) {
-		*retu = true;
-        return (0);
 	} else if (gpa >= VIOAPIC_BASE && gpa < VIOAPIC_BASE + VIOAPIC_SIZE) {
 		mread = vioapic_mmio_read;
 		mwrite = vioapic_mmio_write;
+	} else if (vcpu->vm->flags & VM_OP_F_QEMU) {
+		*retu = true;
+        return (0);
 	} else if (gpa >= VHPET_BASE && gpa < VHPET_BASE + VHPET_SIZE) {
 		mread = vhpet_mmio_read;
 		mwrite = vhpet_mmio_write;
