@@ -198,6 +198,8 @@ int vm_lapic_get_state(struct vcpu *vcpu, struct vm_lapic_state* apic_page);
 int	vm_lapic_irq(struct vcpu *vcpu, int vector);
 int	vm_lapic_local_irq(struct vcpu *vcpu, int vector);
 int	vm_lapic_msi(struct vmctx *ctx, uint64_t addr, uint64_t msg);
+int	vm_ioapic_set_state(struct vmctx *ctx, struct vm_ioapic_state* ioapic_page);
+int	vm_ioapic_get_state(struct vmctx *ctx, struct vm_ioapic_state* ioapic_page);
 int	vm_ioapic_assert_irq(struct vmctx *ctx, int irq);
 int	vm_ioapic_deassert_irq(struct vmctx *ctx, int irq);
 int	vm_ioapic_pulse_irq(struct vmctx *ctx, int irq);

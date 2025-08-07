@@ -3206,9 +3206,6 @@ vmx_run(void *vcpui, register_t rip, pmap_t pmap, struct vm_eventinfo *evinfo)
 		vmexit->u.vmx.exit_reason = exit_reason = vmcs_exit_reason();
 		vmexit->u.vmx.exit_qualification = vmcs_exit_qualification();
 
-        printf("Exit reason: %d\n", exit_reason);
-        printf("Exit qual: %lu\n", vmexit->u.vmx.exit_qualification);
-
 		/* Update 'nextrip' */
 		vcpu->state.nextrip = rip;
 

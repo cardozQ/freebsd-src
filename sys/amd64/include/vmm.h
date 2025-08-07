@@ -689,6 +689,16 @@ struct vm_lapic_state {
     } fields[256];
 };
 
+#define VM_IOAPIC_STATE_REDIR_ENTRIES 32
+struct vm_ioapic_state {
+	uint32_t	id;
+	uint32_t	ioregsel;
+	struct {
+		uint64_t reg;
+		int	 acnt;	/* sum of pin asserts (+1) and deasserts (-1) */
+	} rtbl[VM_IOAPIC_STATE_REDIR_ENTRIES];
+};
+
 struct vm_task_switch {
 	uint16_t	tsssel;		/* new TSS selector */
 	int		ext;		/* task switch due to external event */
