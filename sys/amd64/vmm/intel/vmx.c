@@ -1017,7 +1017,6 @@ vmx_trigger_hostintr(int vector)
 	    "IST %d", vector, gd->gd_ist));
 
 	func = ((long)gd->gd_hioffset << 16 | gd->gd_looffset);
-    printf("%d\n", vector);
 	vmx_call_isr(func);
 }
 
