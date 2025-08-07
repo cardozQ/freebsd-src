@@ -1293,7 +1293,6 @@ vm_handle_paging(struct vcpu *vcpu, bool *retu)
 	    ("vm_handle_paging: invalid fault_type %d", ftype));
 
 	if (ftype == VM_PROT_READ || ftype == VM_PROT_WRITE) {
-        printf("GPA1: %lx\n", vme->u.paging.gpa);
 		rv = pmap_emulate_accessed_dirty(vmspace_pmap(vm->vmspace),
 		    vme->u.paging.gpa, ftype);
 		if (rv == 0) {
@@ -1306,7 +1305,6 @@ vm_handle_paging(struct vcpu *vcpu, bool *retu)
 
 	map = &vm->vmspace->vm_map;
 
-    printf("GPA2: %lx\n", vme->u.paging.gpa);
 	rv = vm_fault(map, vme->u.paging.gpa, ftype, VM_FAULT_NORMAL, NULL);
 
 	VMM_CTR3(vcpu, "vm_handle_paging rv = %d, gpa = %#lx, "
