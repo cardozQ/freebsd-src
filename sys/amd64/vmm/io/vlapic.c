@@ -1703,6 +1703,7 @@ vlapic_deliver_intr(struct vm *vm, bool level, uint32_t dest, bool phys,
 		if (delmode == IOART_DELEXINT) {
 			vm_inject_extint(vcpu);
 		} else {
+			printf("Lapic set actual intr\n");
 			lapic_set_intr(vcpu, vec, level);
 		}
 	}
