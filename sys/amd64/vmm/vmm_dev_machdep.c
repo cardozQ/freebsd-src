@@ -58,6 +58,7 @@
 #include "io/vatpic.h"
 #include "io/vioapic.h"
 #include "io/vhpet.h"
+#include "io/vlapic.h"
 #include "io/vrtc.h"
 
 #ifdef COMPAT_FREEBSD13
@@ -188,6 +189,7 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 	struct vm_exception *vmexc;
 	struct vm_lapic_state *lapic_state;
 	struct vm_lapic_irq *vmirq;
+	struct vm_lapic_intr *vmintr;
 	struct vm_lapic_msi *vmmsi;
 	struct vm_ioapic_irq *ioapic_irq;
 	struct vm_isa_irq *isa_irq;
@@ -368,6 +370,11 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 	case VM_LAPIC_MSI:
 		vmmsi = (struct vm_lapic_msi *)data;
 		error = lapic_intr_msi(vm, vmmsi->addr, vmmsi->msg);
+		break;
+	case VM_LAPIC_DELIVER_INTR:
+		vmintr = (struct vm_lapic_intr *)data;
+		error = vlapic_deliver_intr(vm, vmintr->level, vmintr->dest,
+		    vmintr->phys, vmintr->delmode, vmintr->vector);
 		break;
 	case VM_IOAPIC_ASSERT_IRQ:
 		ioapic_irq = (struct vm_ioapic_irq *)data;

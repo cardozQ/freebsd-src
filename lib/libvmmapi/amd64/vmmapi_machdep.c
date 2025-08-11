@@ -67,6 +67,7 @@ const char *vm_capstrmap[] = {
     VM_GET_FLAGS,    \
     VM_LAPIC_SET_STATE, \
     VM_LAPIC_GET_STATE, \
+    VM_LAPIC_DELIVER_INTR, \
 	VM_LAPIC_IRQ,			\
 	VM_LAPIC_LOCAL_IRQ,		\
 	VM_LAPIC_MSI,			\
@@ -384,6 +385,21 @@ vm_lapic_local_irq(struct vcpu *vcpu, int vector)
 	vmirq.vector = vector;
 
 	return (vcpu_ioctl(vcpu, VM_LAPIC_LOCAL_IRQ, &vmirq));
+}
+
+int
+vm_lapic_deliver_intr(struct vmctx *ctx, bool level, uint32_t dest, bool phys, int delmode, int vec)
+{
+	struct vm_lapic_intr vmintr;
+
+	bzero(&vmintr, sizeof(vmintr));
+	vmintr.level = level;
+	vmintr.dest = dest;
+	vmintr.phys = phys;
+	vmintr.delmode = delmode;
+	vmintr.vector = vec;
+
+	return (ioctl(ctx->fd, VM_LAPIC_DELIVER_INTR, &vmintr));
 }
 
 int
