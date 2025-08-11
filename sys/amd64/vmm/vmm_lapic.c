@@ -230,11 +230,10 @@ lapic_intr_msi(struct vm *vm, uint64_t addr, uint64_t msg)
 	bool phys;
 
 	int flags;
-    vm_get_flags(vm, &flags);
 
 	VM_CTR2(vm, "lapic MSI addr: %#lx msg: %#lx", addr, msg);
 
-	if (!(flags & VM_OP_F_QEMU) && (addr & MSI_X86_ADDR_MASK) != MSI_X86_ADDR_BASE) {
+	if ((addr & MSI_X86_ADDR_MASK) != MSI_X86_ADDR_BASE) {
 		VM_CTR1(vm, "lapic MSI invalid addr %#lx", addr);
 		return (-1);
 	}

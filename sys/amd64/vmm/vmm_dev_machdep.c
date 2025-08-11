@@ -345,20 +345,13 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 		error = vm_inject_nmi(vcpu);
 		break;
 	case VM_LAPIC_SET_STATE:
-        error = copyin(data, lapic_state, sizeof(struct vm_lapic_state));
-        printf("Error code: %d\n", error);
-        if (error) {
-            break;
-        }
-        error = lapic_set_state(vcpu, lapic_state);
-        break;
+		lapic_state = (struct vm_lapic_state *)data;
+		error = lapic_set_state(vcpu, lapic_state);
+		break;
 	case VM_LAPIC_GET_STATE:
+		lapic_state = (struct vm_lapic_state *)data;
 		error = lapic_get_state(vcpu, lapic_state);
-		if (error) {
-            break;
-		}
-        error = copyout(lapic_state, data, sizeof(struct vm_lapic_state));
-        break;
+		break;
 	case VM_LAPIC_IRQ:
 		vmirq = (struct vm_lapic_irq *)data;
 		error = lapic_intr_edge(vcpu, vmirq->vector);
@@ -373,6 +366,8 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 		break;
 	case VM_LAPIC_DELIVER_INTR:
 		vmintr = (struct vm_lapic_intr *)data;
+		printf("VM_LAPIC_DELIVER_INTR: level=%d, dest=0x%x, phys=%d, delmode=%d, vector=%d\n",
+		    vmintr->level, vmintr->dest, vmintr->phys, vmintr->delmode, vmintr->vector);
 		vlapic_deliver_intr(vm, vmintr->level, vmintr->dest,
 		    vmintr->phys, vmintr->delmode, vmintr->vector);
 		error = 0;
