@@ -373,8 +373,9 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 		break;
 	case VM_LAPIC_DELIVER_INTR:
 		vmintr = (struct vm_lapic_intr *)data;
-		error = vlapic_deliver_intr(vm, vmintr->level, vmintr->dest,
+		vlapic_deliver_intr(vm, vmintr->level, vmintr->dest,
 		    vmintr->phys, vmintr->delmode, vmintr->vector);
+		error = 0;
 		break;
 	case VM_IOAPIC_ASSERT_IRQ:
 		ioapic_irq = (struct vm_ioapic_irq *)data;
