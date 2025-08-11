@@ -294,7 +294,6 @@ vlapic_set_intr_ready(struct vlapic *vlapic, int vector, bool level)
 
 	irrptr = &lapic->irr0;
 	atomic_set_int(&irrptr[idx], mask);
-    printf("Set IRR for %d with level %d\n", vector, level);
 
 	/*
 	 * Verify that the trigger-mode of the interrupt matches with
@@ -1704,7 +1703,6 @@ vlapic_deliver_intr(struct vm *vm, bool level, uint32_t dest, bool phys,
 		if (delmode == IOART_DELEXINT) {
 			vm_inject_extint(vcpu);
 		} else {
-			printf("Lapic set actual intr\n");
 			lapic_set_intr(vcpu, vec, level);
 		}
 	}

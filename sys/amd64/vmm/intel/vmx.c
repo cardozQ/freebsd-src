@@ -3208,7 +3208,6 @@ vmx_run(void *vcpui, register_t rip, pmap_t pmap, struct vm_eventinfo *evinfo)
 
 		/* Update 'nextrip' */
 		vcpu->state.nextrip = rip;
-        printf("Causes exit %d\n", exit_reason);
 		if (rc == VMX_GUEST_VMEXIT) {
 			vmx_exit_handle_nmi(vcpu, vmexit);
 			enable_intr();
