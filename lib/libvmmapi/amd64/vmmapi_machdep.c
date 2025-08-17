@@ -67,7 +67,6 @@ const char *vm_capstrmap[] = {
     VM_GET_FLAGS,    \
     VM_LAPIC_SET_STATE, \
     VM_LAPIC_GET_STATE, \
-    VM_LAPIC_DELIVER_INTR, \
 	VM_LAPIC_IRQ,			\
 	VM_LAPIC_LOCAL_IRQ,		\
 	VM_LAPIC_MSI,			\
