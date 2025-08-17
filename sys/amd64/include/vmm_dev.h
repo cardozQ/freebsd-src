@@ -99,13 +99,6 @@ struct vm_lapic_irq {
 	int		vector;
 };
 
-struct vm_lapic_intr {
-	bool		level;
-	uint32_t	dest;
-	bool		phys;
-	int		delmode;
-	int		vector;
-};
 
 struct vm_ioapic_irq {
 	int		irq;
@@ -300,7 +293,6 @@ enum {
 	IOCNUM_RESTART_INSTRUCTION = 39,
 	IOCNUM_LAPIC_SET_STATE = 40,
 	IOCNUM_LAPIC_GET_STATE = 41,
-	IOCNUM_LAPIC_DELIVER_INTR = 49,
 
 	/* PCI pass-thru */
 	IOCNUM_BIND_PPTDEV = 42,
@@ -399,8 +391,6 @@ enum {
 	_IOW('v', IOCNUM_LAPIC_LOCAL_IRQ, struct vm_lapic_irq)
 #define	VM_LAPIC_MSI		\
 	_IOW('v', IOCNUM_LAPIC_MSI, struct vm_lapic_msi)
-#define	VM_LAPIC_DELIVER_INTR	\
-	_IOW('v', IOCNUM_LAPIC_DELIVER_INTR, struct vm_lapic_intr)
 #define	VM_IOAPIC_ASSERT_IRQ	\
 	_IOW('v', IOCNUM_IOAPIC_ASSERT_IRQ, struct vm_ioapic_irq)
 #define	VM_IOAPIC_DEASSERT_IRQ	\

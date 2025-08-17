@@ -1622,7 +1622,6 @@ vmx_inject_interrupts(struct vmx_vcpu *vcpu, struct vlapic *vlapic,
 	if (!extint_pending) {
 		/* Update the Local APIC ISR */
 		vlapic_intr_accepted(vlapic, vector);
-        printf("Vlapic Injected Intr %d\n", vector);
 	} else {
 		vm_extint_clear(vcpu->vcpu);
 		vatpic_intr_accepted(vcpu->vmx->vm, vector);

@@ -58,7 +58,6 @@
 #include "io/vatpic.h"
 #include "io/vioapic.h"
 #include "io/vhpet.h"
-#include "io/vlapic.h"
 #include "io/vrtc.h"
 
 #ifdef COMPAT_FREEBSD13
@@ -157,7 +156,6 @@ const struct vmmdev_ioctl vmmdev_machdep_ioctls[] = {
 	VMMDEV_IOCTL(VM_PPTDEV_MSIX, 0),
 	VMMDEV_IOCTL(VM_PPTDEV_DISABLE_MSIX, 0),
 	VMMDEV_IOCTL(VM_LAPIC_MSI, 0),
-	VMMDEV_IOCTL(VM_LAPIC_DELIVER_INTR, 0),
 	VMMDEV_IOCTL(VM_IOAPIC_ASSERT_IRQ, 0),
 	VMMDEV_IOCTL(VM_IOAPIC_DEASSERT_IRQ, 0),
 	VMMDEV_IOCTL(VM_IOAPIC_PULSE_IRQ, 0),
@@ -190,7 +188,6 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 	struct vm_exception *vmexc;
 	struct vm_lapic_state *lapic_state;
 	struct vm_lapic_irq *vmirq;
-	struct vm_lapic_intr *vmintr;
 	struct vm_lapic_msi *vmmsi;
 	struct vm_ioapic_irq *ioapic_irq;
 	struct vm_isa_irq *isa_irq;
@@ -214,8 +211,6 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 #endif
 	int error;
 
-    lapic_state = malloc(sizeof(struct vm_lapic_state), M_TEMP, M_ZERO | M_WAITOK);
-    
 	error = 0;
 	switch (cmd) {
 	case VM_RUN: {
@@ -364,14 +359,6 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 	case VM_LAPIC_MSI:
 		vmmsi = (struct vm_lapic_msi *)data;
 		error = lapic_intr_msi(vm, vmmsi->addr, vmmsi->msg);
-		break;
-	case VM_LAPIC_DELIVER_INTR:
-		vmintr = (struct vm_lapic_intr *)data;
-		printf("VM_LAPIC_DELIVER_INTR: level=%d, dest=0x%x, phys=%d, delmode=%d, vector=%d\n",
-		    vmintr->level, vmintr->dest, vmintr->phys, vmintr->delmode, vmintr->vector);
-		vlapic_deliver_intr(vm, vmintr->level, vmintr->dest,
-		    vmintr->phys, vmintr->delmode, vmintr->vector);
-		error = 0;
 		break;
 	case VM_IOAPIC_ASSERT_IRQ:
 		ioapic_irq = (struct vm_ioapic_irq *)data;

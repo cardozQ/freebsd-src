@@ -387,20 +387,6 @@ vm_lapic_local_irq(struct vcpu *vcpu, int vector)
 	return (vcpu_ioctl(vcpu, VM_LAPIC_LOCAL_IRQ, &vmirq));
 }
 
-int
-vm_lapic_deliver_intr(struct vmctx *ctx, bool level, uint32_t dest, bool phys, int delmode, int vec)
-{
-	struct vm_lapic_intr vmintr;
-
-	bzero(&vmintr, sizeof(vmintr));
-	vmintr.level = level;
-	vmintr.dest = dest;
-	vmintr.phys = phys;
-	vmintr.delmode = delmode;
-	vmintr.vector = vec;
-
-	return (ioctl(ctx->fd, VM_LAPIC_DELIVER_INTR, &vmintr));
-}
 
 int
 vm_lapic_msi(struct vmctx *ctx, uint64_t addr, uint64_t msg)
