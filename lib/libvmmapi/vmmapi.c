@@ -542,6 +542,8 @@ vm_setup_qmemory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, cons
         ctx->memsegs[VM_MEMSEG_LOW].size = VM_LOWMEM_QEMU_LIMIT;
         ctx->memsegs[VM_MEMSEG_HIGH].size = memsize - VM_LOWMEM_QEMU_LIMIT;
         objsize = VM_HIGHMEM_BASE + ctx->memsegs[VM_MEMSEG_HIGH].size;
+        printf("vm_setup_qmemory: memsegs[LOW].size=%zu, memsegs[HIGH].size=%zu\n",
+               ctx->memsegs[VM_MEMSEG_LOW].size, ctx->memsegs[VM_MEMSEG_HIGH].size);
     } else {
         ctx->memsegs[VM_MEMSEG_LOW].size = memsize;
         ctx->memsegs[VM_MEMSEG_HIGH].size = 0;
