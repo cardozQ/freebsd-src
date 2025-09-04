@@ -77,7 +77,6 @@ enum {
 	VM_BOOTROM,
 	VM_FRAMEBUFFER,
 	VM_PCIROM,
-	VM_OPTION /* Option ROM Allocation for QEMU */
 };
 
 __BEGIN_DECLS
