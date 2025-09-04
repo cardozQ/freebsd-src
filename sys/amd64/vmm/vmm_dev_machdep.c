@@ -36,6 +36,8 @@
 #include <sys/mman.h>
 #include <sys/uio.h>
 #include <sys/proc.h>
+#include <sys/malloc.h>
+#include <sys/types.h>
 
 #include <vm/vm.h>
 #include <vm/pmap.h>
@@ -142,6 +144,10 @@ const struct vmmdev_ioctl vmmdev_machdep_ioctls[] = {
 #endif
 	VMMDEV_IOCTL(VM_INJECT_NMI, VMMDEV_IOCTL_LOCK_ONE_VCPU),
 	VMMDEV_IOCTL(VM_LAPIC_IRQ, VMMDEV_IOCTL_LOCK_ONE_VCPU),
+
+	VMMDEV_IOCTL(VM_LAPIC_SET_STATE, VMMDEV_IOCTL_LOCK_ONE_VCPU),
+	VMMDEV_IOCTL(VM_LAPIC_GET_STATE, VMMDEV_IOCTL_LOCK_ONE_VCPU),
+
 	VMMDEV_IOCTL(VM_GET_X2APIC_STATE, VMMDEV_IOCTL_LOCK_ONE_VCPU),
 
 	VMMDEV_IOCTL(VM_LAPIC_LOCAL_IRQ, VMMDEV_IOCTL_MAYBE_ALLOC_VCPU),
@@ -164,6 +170,9 @@ const struct vmmdev_ioctl vmmdev_machdep_ioctls[] = {
 	VMMDEV_IOCTL(VM_RTC_WRITE, 0),
 	VMMDEV_IOCTL(VM_RTC_GETTIME, 0),
 	VMMDEV_IOCTL(VM_RTC_SETTIME, 0),
+
+	VMMDEV_IOCTL(VM_GET_FLAGS, 0),
+	VMMDEV_IOCTL(VM_SET_FLAGS, 0),
 };
 const size_t vmmdev_machdep_ioctl_count = nitems(vmmdev_machdep_ioctls);
 
@@ -177,6 +186,7 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 	struct vm_run_13 *vmrun_13;
 #endif
 	struct vm_exception *vmexc;
+	struct vm_lapic_state *lapic_state;
 	struct vm_lapic_irq *vmirq;
 	struct vm_lapic_msi *vmmsi;
 	struct vm_ioapic_irq *ioapic_irq;
@@ -329,6 +339,14 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 		break;
 	case VM_INJECT_NMI:
 		error = vm_inject_nmi(vcpu);
+		break;
+	case VM_LAPIC_SET_STATE:
+		lapic_state = (struct vm_lapic_state *)data;
+		error = lapic_set_state(vcpu, lapic_state);
+		break;
+	case VM_LAPIC_GET_STATE:
+		lapic_state = (struct vm_lapic_state *)data;
+		error = lapic_get_state(vcpu, lapic_state);
 		break;
 	case VM_LAPIC_IRQ:
 		vmirq = (struct vm_lapic_irq *)data;
@@ -517,6 +535,18 @@ vmmdev_machdep_ioctl(struct vm *vm, struct vcpu *vcpu, u_long cmd, caddr_t data,
 		error = vm_restore_time(vm);
 		break;
 #endif
+	case VM_SET_FLAGS: {
+        int *vflags;
+        vflags = (int *)data;
+        error = vm_set_flags(vm, *vflags);
+        break;
+	}
+	case VM_GET_FLAGS: {
+		int *vflags;
+		vflags = (int *)data;
+		vm_get_flags(vm, vflags);
+        break;
+	}
 	default:
 		error = ENOTTY;
 		break;
