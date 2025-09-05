@@ -610,7 +610,7 @@ vm_setup_memory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms)
 
 #ifdef __amd64__
 int
-vm_setup_qmemory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, const char* name)
+vm_setup_qmemory(struct vmctx *ctx, size_t memsize, int segid, enum vm_mmap_style vms, const char* name)
 {
 	size_t objsize;
 
@@ -627,7 +627,7 @@ vm_setup_qmemory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, cons
     }
 
 
-	ctx->baseaddr = vm_create_devmem(ctx, VM_SYSMEM, name, objsize);
+	ctx->baseaddr = vm_create_devmem(ctx, segid, name, objsize);
     return (0);
 }
 #endif

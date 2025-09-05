@@ -132,7 +132,7 @@ int vm_setup_memory_domains(struct vmctx *ctx, enum vm_mmap_style s,
 #ifdef __amd64__
 int	vm_set_flags(struct vmctx *ctx, int flags);
 int	vm_get_flags(struct vmctx *ctx, int *flags);
-int	vm_setup_qmemory(struct vmctx *ctx, size_t memsize, enum vm_mmap_style vms, const char* name);
+int	vm_setup_qmemory(struct vmctx *ctx, size_t memsize, int segid, enum vm_mmap_style vms, const char* name);
 
 /* Register QEMU callbacks */
 int vm_assist_qmem(struct vcpu* vcpu, qmem_callback_t mem_callback, struct vm_exit* vme);
