@@ -619,7 +619,7 @@ vm_setup_qmemory(struct vmctx *ctx, size_t memsize, int segid, enum vm_mmap_styl
     if (memsize > VM_LOWMEM_QEMU_LIMIT) {
         ctx->lowmem_size = VM_LOWMEM_QEMU_LIMIT;
         ctx->highmem_size = memsize - VM_LOWMEM_QEMU_LIMIT;
-        objsize = VM_HIGHMEM_BASE + ctx->memsegs[VM_MEMSEG_HIGH].size;
+        objsize = VM_HIGHMEM_BASE + ctx->highmem_size;
     } else {
         ctx->lowmem_size = memsize;
         ctx->highmem_size = 0;
