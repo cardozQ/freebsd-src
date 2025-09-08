@@ -6,4 +6,4 @@ SRCS+=	ppt.c			\
 SRCS+=	vmm_instruction_emul.c
 
 CFLAGS+= -DWITH_VMMAPI_SNAPSHOT
-CFLAGS.vmmapi_machdep.c+= -I${SRCTOP}/sys/amd64
+#CFLAGS.vmmapi_machdep.c+= -I${SRCTOP}/sys/amd64
