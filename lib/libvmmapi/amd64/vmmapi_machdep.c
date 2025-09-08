@@ -116,7 +116,7 @@ vm_get_flags(struct vmctx *ctx,
 }
 
 static int
-mem_read(struct vcpu *vcpu, uint64_t gpa, uint64_t *rval, int size, void *arg)
+mem_read(struct vcpu *vcpu __unused, uint64_t gpa, uint64_t *rval, int size, void *arg)
 {
 	qmem_callback_t mem_callback = arg;
 	uint8_t temp_data[sizeof(uint64_t)] = {0};
