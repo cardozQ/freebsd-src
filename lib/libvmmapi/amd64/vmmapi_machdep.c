@@ -137,7 +137,7 @@ mem_read(struct vcpu *vcpu, uint64_t gpa, uint64_t *rval, int size, void *arg)
 }
 
 static int
-mem_write(struct vcpu *vcpu, uint64_t gpa, uint64_t wval, int size, void *arg)
+mem_write(struct vcpu *vcpu __unused, uint64_t gpa, uint64_t wval, int size, void *arg)
 {
 	qmem_callback_t mem_callback = arg;
 
@@ -158,7 +158,7 @@ int
 vm_assist_qmem(struct vcpu* vcpu, qmem_callback_t mem_callback, struct vm_exit* vmexit)
 {
 	struct vie *vie;
-	int err, i, cs_d;
+	int cs_d;
 	enum vm_cpu_mode mode;
 
 	vie = &vmexit->u.inst_emul.vie;
@@ -187,9 +187,8 @@ fail:
 int
 vm_assist_qio(struct vcpu* vcpu, qio_callback_t io_callback, struct vm_exit* vmexit)
 {
-	int addrsize, bytes, flags, in, port, prot, rep;
+	int addrsize, bytes, in, port, prot, rep;
 	uint32_t eax, val;
-	void *arg;
 	int error, fault, retval;
 	enum vm_reg_name idxreg;
 	uint64_t gla, index, iterations, count;
@@ -256,7 +255,7 @@ vm_assist_qio(struct vcpu* vcpu, qio_callback_t io_callback, struct vm_exit* vme
 			io_args.port = port;
 			io_args.in = in;
 			io_args.size = bytes;
-            io_args.data = &val;
+            io_args.data = (uint8_t*)&val;
 			retval = io_callback(&io_args);
 
 			if (in)
@@ -297,7 +296,7 @@ vm_assist_qio(struct vcpu* vcpu, qio_callback_t io_callback, struct vm_exit* vme
         io_args.port = port;
         io_args.in = in;
         io_args.size = bytes;
-        io_args.data = &val;
+        io_args.data = (uint8_t*)&val;
         retval = io_callback(&io_args);
 		if (retval == 0 && in) {
 			eax &= ~vie_size2mask(bytes);
