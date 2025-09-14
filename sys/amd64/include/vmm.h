@@ -144,8 +144,13 @@ enum x2apic_state {
 #define VM_MAX_NAMELEN \
     (SPECNAMELEN - VM_MAX_PREFIXLEN - VM_MAX_SUFFIXLEN - 1)
 
+/* Other VMM FLags */
+#define VM_OP_F_QEMU (1 << 0)
+
+
 #ifdef _KERNEL
 #include <sys/kassert.h>
+#include <sys/types.h>
 
 CTASSERT(VM_MAX_NAMELEN >= VM_MIN_NAMELEN);
 
@@ -239,7 +244,8 @@ void vm_get_topology(struct vm *vm, uint16_t *sockets, uint16_t *cores,
     uint16_t *threads, uint16_t *maxcpus);
 int vm_set_topology(struct vm *vm, uint16_t sockets, uint16_t cores,
     uint16_t threads, uint16_t maxcpus);
-
+void vm_get_flags(struct vm *vm, int *vflags);
+int vm_set_flags(struct vm *vm, int vflags);
 int vm_map_mmio(struct vm *vm, vm_paddr_t gpa, size_t len, vm_paddr_t hpa);
 int vm_unmap_mmio(struct vm *vm, vm_paddr_t gpa, size_t len);
 int vm_assign_pptdev(struct vm *vm, int bus, int slot, int func);
@@ -528,6 +534,20 @@ struct vm_guest_paging {
 	enum vm_paging_mode paging_mode;
 };
 
+struct vm_qmem {
+    vm_paddr_t gpa;
+    int write;
+    size_t size;
+    uint8_t *data;
+};
+
+struct vm_qio {
+	uint16_t port;
+	int in;
+	size_t size;
+    uint8_t *data;
+};
+
 /*
  * The data structures 'vie' and 'vie_op' are meant to be opaque to the
  * consumers of instruction decoding. The only reason why their contents
@@ -659,6 +679,24 @@ enum task_switch_reason {
 	TSR_IRET,
 	TSR_JMP,
 	TSR_IDT_GATE,	/* task gate in IDT */
+};
+
+
+struct vm_lapic_state {
+    struct {
+        uint32_t data;
+        uint32_t padding[3];
+    } fields[256];
+};
+
+#define VM_IOAPIC_STATE_REDIR_ENTRIES 32
+struct vm_ioapic_state {
+	uint32_t	id;
+	uint32_t	ioregsel;
+	struct {
+		uint64_t reg;
+		int	 acnt;	/* sum of pin asserts (+1) and deasserts (-1) */
+	} rtbl[VM_IOAPIC_STATE_REDIR_ENTRIES];
 };
 
 struct vm_task_switch {

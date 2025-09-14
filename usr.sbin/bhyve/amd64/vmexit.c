@@ -56,6 +56,7 @@
 #include "vmexit.h"
 #include "xmsr.h"
 
+/*
 void
 vm_inject_fault(struct vcpu *vcpu, int vector, int errcode_valid,
     int errcode)
@@ -68,6 +69,7 @@ vm_inject_fault(struct vcpu *vcpu, int vector, int errcode_valid,
 	    restart_instruction);
 	assert(error == 0);
 }
+*/
 
 static int
 vmexit_inout(struct vmctx *ctx, struct vcpu *vcpu, struct vm_run *vmrun)
