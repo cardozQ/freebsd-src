@@ -41,6 +41,8 @@ int	lapic_mmio_read(struct vcpu *vcpu, uint64_t gpa,
 int	lapic_mmio_write(struct vcpu *vcpu, uint64_t gpa,
 			 uint64_t wval, int size, void *arg);
 
+int lapic_set_state(struct vcpu *vcpu, struct vm_lapic_state *lapic_state);
+int lapic_get_state(struct vcpu *vcpu, struct vm_lapic_state *lapic_state);
 /*
  * Signals to the LAPIC that an interrupt at 'vector' needs to be generated
  * to the 'cpu', the state is recorded in IRR.

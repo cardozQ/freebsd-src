@@ -173,6 +173,7 @@ struct vm {
 	uint16_t	threads;		/* (o) num of threads/core */
 	uint16_t	maxcpus;		/* (o) max pluggable cpus */
 	struct sx	vcpus_init_lock;	/* (o) */
+    int     flags; /* (o) External flags */
 };
 
 #define	VMM_CTR0(vcpu, format)						\
@@ -650,6 +651,40 @@ vm_set_topology(struct vm *vm, uint16_t sockets, uint16_t cores,
 	return(0);
 }
 
+void
+vm_get_flags(struct vm *vm, int *vflags)
+{
+	*vflags = vm->flags;
+}
+
+static void
+setup_qemu_mode(struct vm *vm)
+{
+	/* Remove everything except vatpic and ioapic */
+	vpmtmr_cleanup(vm->vpmtmr);
+    vm->vpmtmr = NULL;
+	vatpit_cleanup(vm->vatpit);
+    vm->vatpit = NULL;
+	vhpet_cleanup(vm->vhpet);
+    vm->vhpet = NULL;
+	if (vm->vrtc) {
+        vrtc_cleanup(vm->vrtc);
+        vm->vrtc = NULL;
+	}
+}
+
+int
+vm_set_flags(struct vm *vm, int vflags)
+{
+	/* Ignore maxcpus. */
+	vm->flags = vflags;
+	if (vm->flags & VM_OP_F_QEMU) {
+        setup_qemu_mode(vm);
+	}
+	return(0);
+}
+
+
 static void
 vm_cleanup(struct vm *vm, bool destroy)
 {
@@ -663,15 +698,18 @@ vm_cleanup(struct vm *vm, bool destroy)
 	if (vm->iommu != NULL)
 		iommu_destroy_domain(vm->iommu);
 
-	if (destroy)
-		vrtc_cleanup(vm->vrtc);
-	else
-		vrtc_reset(vm->vrtc);
-	vpmtmr_cleanup(vm->vpmtmr);
-	vatpit_cleanup(vm->vatpit);
-	vhpet_cleanup(vm->vhpet);
-	vatpic_cleanup(vm->vatpic);
-	vioapic_cleanup(vm->vioapic);
+	// Not created in QEMU mode
+	if (!(vm->flags & VM_OP_F_QEMU)) {
+        if (destroy)
+            vrtc_cleanup(vm->vrtc);
+        else
+            vrtc_reset(vm->vrtc);
+        vpmtmr_cleanup(vm->vpmtmr);
+        vatpit_cleanup(vm->vatpit);
+        vhpet_cleanup(vm->vhpet);
+    }
+    vioapic_cleanup(vm->vioapic);
+    vatpic_cleanup(vm->vatpic);
 
 	for (int i = 0; i < vm->maxcpus; i++) {
 		if (vm->vcpu[i] != NULL)
@@ -1333,6 +1371,9 @@ vm_handle_inst_emul(struct vcpu *vcpu, bool *retu)
 	} else if (gpa >= VIOAPIC_BASE && gpa < VIOAPIC_BASE + VIOAPIC_SIZE) {
 		mread = vioapic_mmio_read;
 		mwrite = vioapic_mmio_write;
+	} else if (vcpu->vm->flags & VM_OP_F_QEMU) {
+		*retu = true;
+        return (0);
 	} else if (gpa >= VHPET_BASE && gpa < VHPET_BASE + VHPET_SIZE) {
 		mread = vhpet_mmio_read;
 		mwrite = vhpet_mmio_write;

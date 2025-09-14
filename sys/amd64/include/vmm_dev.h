@@ -261,8 +261,8 @@ enum {
 	IOCNUM_REINIT = 5,
 
 	/* memory apis */
-	IOCNUM_MAP_MEMORY = 10,			/* deprecated */
-	IOCNUM_GET_MEMORY_SEG = 11,		/* deprecated */
+	IOCNUM_MAP_MEMORY = 10,            /* deprecated */
+	IOCNUM_GET_MEMORY_SEG = 11,        /* deprecated */
 	IOCNUM_GET_GPA_PMAP = 12,
 	IOCNUM_GLA2GPA = 13,
 	IOCNUM_ALLOC_MEMSEG = 14,
@@ -295,15 +295,17 @@ enum {
 	IOCNUM_LAPIC_LOCAL_IRQ = 37,
 	IOCNUM_IOAPIC_PINCOUNT = 38,
 	IOCNUM_RESTART_INSTRUCTION = 39,
+	IOCNUM_LAPIC_SET_STATE = 40,
+	IOCNUM_LAPIC_GET_STATE = 41,
 
 	/* PCI pass-thru */
-	IOCNUM_BIND_PPTDEV = 40,
-	IOCNUM_UNBIND_PPTDEV = 41,
-	IOCNUM_MAP_PPTDEV_MMIO = 42,
-	IOCNUM_PPTDEV_MSI = 43,
-	IOCNUM_PPTDEV_MSIX = 44,
-	IOCNUM_PPTDEV_DISABLE_MSIX = 45,
-	IOCNUM_UNMAP_PPTDEV_MMIO = 46,
+	IOCNUM_BIND_PPTDEV = 42,
+	IOCNUM_UNBIND_PPTDEV = 43,
+	IOCNUM_MAP_PPTDEV_MMIO = 44,
+	IOCNUM_PPTDEV_MSI = 45,
+	IOCNUM_PPTDEV_MSIX = 46,
+	IOCNUM_PPTDEV_DISABLE_MSIX = 47,
+	IOCNUM_UNMAP_PPTDEV_MMIO = 48,
 
 	/* statistics */
 	IOCNUM_VM_STATS = 50,
@@ -339,7 +341,12 @@ enum {
 	/* checkpoint */
 	IOCNUM_SNAPSHOT_REQ = 113,
 
-	IOCNUM_RESTORE_TIME = 115
+	IOCNUM_RESTORE_TIME = 115,
+
+	/* VM Flags */
+	IOCNUM_SET_FLAGS = 121,
+    IOCNUM_GET_FLAGS = 122,
+
 };
 
 #define	VM_RUN		\
@@ -378,6 +385,10 @@ enum {
 	    struct vm_readwrite_kernemu_device)
 #define	VM_INJECT_EXCEPTION	\
 	_IOW('v', IOCNUM_INJECT_EXCEPTION, struct vm_exception)
+#define	VM_LAPIC_SET_STATE 		\
+	_IOW('v', IOCNUM_LAPIC_SET_STATE, struct vm_lapic_state)
+#define	VM_LAPIC_GET_STATE 		\
+	_IOR('v', IOCNUM_LAPIC_GET_STATE, struct vm_lapic_state)
 #define	VM_LAPIC_IRQ 		\
 	_IOW('v', IOCNUM_LAPIC_IRQ, struct vm_lapic_irq)
 #define	VM_LAPIC_LOCAL_IRQ 	\
@@ -434,6 +445,10 @@ enum {
 	_IOW('v', IOCNUM_SET_TOPOLOGY, struct vm_cpu_topology)
 #define VM_GET_TOPOLOGY \
 	_IOR('v', IOCNUM_GET_TOPOLOGY, struct vm_cpu_topology)
+#define VM_SET_FLAGS \
+	_IOW('v', IOCNUM_SET_FLAGS, int)
+#define VM_GET_FLAGS \
+	_IOR('v', IOCNUM_GET_FLAGS, int)
 #define	VM_GET_GPA_PMAP \
 	_IOWR('v', IOCNUM_GET_GPA_PMAP, struct vm_gpa_pte)
 #define	VM_GLA2GPA	\

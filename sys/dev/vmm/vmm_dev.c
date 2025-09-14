@@ -289,7 +289,10 @@ alloc_memseg(struct vmmdev_softc *sc, struct vm_memseg *mseg, size_t len,
 	 * by stripped off when devfs processes the full string.
 	 */
 	if (VM_MEMSEG_NAME(mseg)) {
-		sysmem = false;
+        /* QEMU mode gives system memory a name */
+        if(mseg->segid > 0) {
+            sysmem = false;
+        }
 		name = malloc(len, M_VMMDEV, M_WAITOK);
 		error = copystr(mseg->name, name, len, NULL);
 		if (error)
